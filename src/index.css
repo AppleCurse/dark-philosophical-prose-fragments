@@ -237,13 +237,21 @@ body::before {
   }
 }
 
-/* Concrete / Slate Wall Texture */
+/* Brutalist Raw Concrete & Kaba Sıva Wall Texture */
 .wall-surface {
-  background-color: #080808;
-  background-image: 
-    radial-gradient(ellipse at 50% 30%, rgba(26, 26, 26, 0.7) 0%, rgba(6, 6, 6, 0.95) 75%),
-    radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.02) 0%, transparent 40%),
-    radial-gradient(circle at 20% 70%, rgba(255, 255, 255, 0.015) 0%, transparent 40%);
+  background-color: #0b0b0d;
+  background-image:
+    /* Bare overhead cold bulb lighting the concrete wall */
+    radial-gradient(ellipse at 50% 18%, rgba(225, 220, 210, 0.09) 0%, transparent 60%),
+    /* Uneven kaba sıva plaster stains & trowel variations */
+    radial-gradient(ellipse at 15% 45%, rgba(30, 30, 35, 0.6) 0%, transparent 55%),
+    radial-gradient(ellipse at 85% 60%, rgba(25, 25, 30, 0.7) 0%, transparent 50%),
+    radial-gradient(circle at 50% 85%, rgba(0, 0, 0, 0.8) 0%, transparent 60%),
+    /* Micro-pores and aggregate sand in the rough plaster */
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 500 500' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='kabaSiva'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.85  0 0 0 0 0.82  0 0 0 0 0.78  0 0 0 0.15 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23kabaSiva)'/%3E%3C/svg%3E"),
+    /* Deep pitting / concrete crater marks */
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='craters'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.15' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1 1 1 0 -0.7'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23craters)' opacity='0.35'/%3E%3C/svg%3E");
+  box-shadow: inset 0 0 160px rgba(0, 0, 0, 0.95);
 }
 
 /* Handcrafted Okka / Divit Ink Pen Effects */
@@ -291,4 +299,44 @@ body::before {
 
 .hanging-portrait:hover {
   transform: rotate(0deg) scale(1.01);
+}
+
+/* Companion 1/4 Sized Snapshots */
+.companion-snapshot {
+  position: relative;
+  box-shadow: 
+    0 20px 35px -10px rgba(0, 0, 0, 0.95),
+    0 8px 16px -6px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
+  transform-origin: 50% 0%;
+  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.5s ease;
+}
+
+.companion-snapshot:hover {
+  transform: scale(1.05) rotate(0deg) !important;
+  z-index: 25;
+}
+
+/* Active Ink Pen Nib Cursor */
+@keyframes inkNibPulse {
+  0%, 100% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(0.85);
+  }
+}
+
+.ink-nib-cursor {
+  display: inline-block;
+  width: 3px;
+  height: 1.15em;
+  background-color: #f1eee7;
+  margin-left: 4px;
+  vertical-align: -0.15em;
+  border-radius: 1px;
+  box-shadow: 0 0 8px rgba(241, 238, 231, 0.6);
+  animation: inkNibPulse 0.75s infinite ease-in-out;
 }
