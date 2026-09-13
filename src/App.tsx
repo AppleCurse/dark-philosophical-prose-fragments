@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
-import heroImg from "./assets/hero.jpg";
+import heroImg from "./assets/salim_portrait_feather.jpg";
+import salimDarkImg from "./assets/salim_dark_raven.jpg";
+import salimWhiteImg from "./assets/salim_white_raven.jpg";
 import bedImg from "./assets/bed.jpg";
 import soilImg from "./assets/soil.jpg";
 import ravenImg from "./assets/raven.jpg";
@@ -138,6 +140,62 @@ function DuelRow({ devil, me }: { devil: string; me: string }) {
   );
 }
 
+function BentNail() {
+  return (
+    <div className="absolute -top-7 left-1/2 -translate-x-1/2 z-30 pointer-events-none select-none">
+      <svg
+        width="54"
+        height="58"
+        viewBox="0 0 54 58"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="overflow-visible"
+      >
+        <defs>
+          <linearGradient id="rustIron" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#3d2a1b" />
+            <stop offset="40%" stopColor="#7a4a2a" />
+            <stop offset="70%" stopColor="#241a12" />
+            <stop offset="100%" stopColor="#a35527" />
+          </linearGradient>
+        </defs>
+
+        {/* Crack / hole in the wall plaster */}
+        <ellipse cx="27" cy="12" rx="6" ry="3.5" fill="#000000" opacity="0.95" />
+        <path d="M22 11 L16 8 M32 13 L38 16 M27 15 L28 20" stroke="#222" strokeWidth="1.2" strokeLinecap="round" />
+
+        {/* Cast shadow of the bent iron nail on photo */}
+        <path
+          d="M27 12 C30 22 35 32 44 42"
+          stroke="rgba(0,0,0,0.7)"
+          strokeWidth="7"
+          strokeLinecap="round"
+          filter="blur(2px)"
+        />
+
+        {/* Nail shank (hammered into wall, then bent sharply downwards) */}
+        <line x1="27" y1="12" x2="28" y2="23" stroke="#2a1e15" strokeWidth="5.5" strokeLinecap="round" />
+        <line x1="27" y1="12" x2="28" y2="23" stroke="url(#rustIron)" strokeWidth="3.5" strokeLinecap="round" />
+
+        {/* Crooked, bent section overlapping the frame */}
+        <path d="M28 23 Q29 28 40 40" stroke="#1c140e" strokeWidth="5.5" strokeLinecap="round" />
+        <path d="M28 23 Q29 28 40 40" stroke="url(#rustIron)" strokeWidth="3.8" strokeLinecap="round" />
+        <path d="M28 23 Q29 28 40 40" stroke="#d4793b" strokeWidth="1" strokeLinecap="round" opacity="0.6" />
+
+        {/* Hammered nailhead (flattened, rustic, slightly cocked) */}
+        <ellipse cx="26.5" cy="11.5" rx="6.5" ry="3.8" fill="#140e0a" transform="rotate(-18 26.5 11.5)" />
+        <ellipse cx="26" cy="11" rx="5.5" ry="2.8" fill="#543722" transform="rotate(-18 26 11)" />
+        <ellipse cx="25.5" cy="10.5" rx="4" ry="1.8" fill="#9e633a" transform="rotate(-18 25.5 10.5)" />
+
+        {/* Rust corrosion flecks */}
+        <circle cx="31" cy="27" r="1.1" fill="#c45d25" />
+        <circle cx="35" cy="33" r="1.2" fill="#943d16" />
+        <circle cx="38" cy="38" r="0.9" fill="#d97230" />
+      </svg>
+    </div>
+  );
+}
+
 /* ---------- app ---------- */
 
 export default function App() {
@@ -165,72 +223,75 @@ export default function App() {
         </div>
       </div>
 
-      {/* ================= HERO ================= */}
-      <header className="relative h-[100svh] min-h-[640px] overflow-hidden">
-        {/* image w/ parallax */}
-        <div
-          className="absolute -inset-y-[10%] inset-x-0 will-change-transform"
-          style={{ transform: `translate3d(0, ${y * 0.22}px, 0)` }}
-        >
-          <div className="hero-img h-full w-full">
-            <img
-              src={heroImg}
-              alt="Bir kanadı beyaz, bir kanadı siyah; omzunda karga — Salim Gümüş"
-              className="h-full w-full object-cover object-[50%_35%]"
-              style={{ filter: "grayscale(1) contrast(1.05)" }}
-            />
-          </div>
+      {/* ================= HERO (DUVARA ÇAKILI VESİKA VE DİVİT MÜREKKEP) ================= */}
+      <header className="wall-surface relative min-h-screen pt-20 pb-28 px-4 sm:px-6 md:px-8 flex flex-col items-center justify-center overflow-hidden">
+        {/* Overhead cold light beam hitting the wall */}
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute left-1/2 -top-24 -translate-x-1/2 h-[650px] w-[850px] max-w-full rounded-full bg-[radial-gradient(closest-side,rgba(236,233,226,0.07),transparent)] blur-3xl" />
         </div>
 
-        {/* mist */}
-        <div className="mist pointer-events-none absolute inset-0 opacity-40">
-          <div className="absolute left-1/4 top-1/3 h-[60vh] w-[60vw] rounded-full bg-[radial-gradient(closest-side,rgba(236,233,226,0.12),transparent)] blur-3xl" />
+        {/* Top header badge */}
+        <div className="hero-text mb-10 sm:mb-12 flex items-center justify-center gap-4 text-silver-dim" style={{ animationDelay: "150ms" }}>
+          <span className="h-px w-10 bg-silver-dim/40 md:w-16" />
+          <span className="font-mono text-[0.62rem] uppercase tracking-[0.55em] text-silver-dim">
+            Salim Gümüş · Vesika No: 01
+          </span>
+          <span className="h-px w-10 bg-silver-dim/40 md:w-16" />
         </div>
 
-        {/* overlays */}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink/70 via-ink/10 to-ink" />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-ink/50 via-transparent to-ink/50" />
-
-        {/* top label */}
-        <div className="hero-text absolute left-0 right-0 top-10 flex items-center justify-center gap-4 text-silver" style={{ animationDelay: "200ms" }}>
-          <span className="h-px w-10 bg-silver/60 md:w-16" />
-          <span className="font-mono text-[0.62rem] uppercase tracking-[0.55em]">Salim Gümüş</span>
-          <span className="h-px w-10 bg-silver/60 md:w-16" />
-        </div>
-
-        {/* wing labels */}
-        <div className="hero-text absolute bottom-10 left-8 hidden md:block" style={{ animationDelay: "1100ms" }}>
-          <div className="font-mono text-[0.58rem] uppercase tracking-[0.5em] text-bone/70">Melek</div>
-          <div className="mt-1 font-mono text-[0.5rem] uppercase tracking-[0.3em] text-silver-dim">
-            sol kanat
-          </div>
-        </div>
-        <div className="hero-text absolute bottom-10 right-8 hidden text-right md:block" style={{ animationDelay: "1200ms" }}>
-          <div className="font-mono text-[0.58rem] uppercase tracking-[0.5em] text-silver-dim">Şeytan</div>
-          <div className="mt-1 font-mono text-[0.5rem] uppercase tracking-[0.3em] text-silver-dim/60">
-            sağ kanat
-          </div>
-        </div>
-
-        {/* headline */}
-        <div className="absolute inset-x-0 bottom-0 px-6 pb-24 md:pb-28">
-          <div className="mx-auto max-w-5xl text-center">
-            <h1 className="font-serif text-4xl font-light italic leading-[1.1] text-bone sm:text-5xl md:text-7xl lg:text-8xl">
-              <span className="hero-text block" style={{ animationDelay: "500ms" }}>
-                Sikemeyeceğiniz kadar{" "}
-                <span className="font-semibold not-italic text-white">tecrübeli</span>,
-              </span>
-              <span className="hero-text block" style={{ animationDelay: "800ms" }}>
-                sikemeyecek kadar{" "}
-                <span className="font-semibold not-italic text-silver-dim">yorgun</span>.
-              </span>
-            </h1>
-
-            <div className="hero-text mt-14 flex flex-col items-center gap-3" style={{ animationDelay: "1500ms" }}>
-              <div className="pulse-slow font-mono text-[0.58rem] tracking-[0.45em] text-silver-dim">
-                AŞAĞI KAYDIR
+        {/* Container for photo + handwritten ink */}
+        <div className="relative z-10 mx-auto w-full max-w-4xl flex flex-col items-center">
+          {/* Framed Photograph pinned with bent rusted nail */}
+          <div className="relative group pt-4">
+            <BentNail />
+            
+            <div className="hanging-portrait rotate-[-1.4deg] bg-[#0c0c0c] p-3 sm:p-4 rounded-[2px] border border-white/10 max-w-[320px] sm:max-w-[400px] md:max-w-[460px] shadow-[0_30px_70px_-15px_rgba(0,0,0,0.95)]">
+              <div className="overflow-hidden relative aspect-[3/4] bg-black">
+                <img
+                  src={heroImg}
+                  alt="Salim Gümüş — Yarı siyah, yarı beyaz; omzunda kuzgun, havada tüyler"
+                  className="h-full w-full object-cover object-center filter contrast-[1.08] brightness-[0.98] transition-transform duration-700 group-hover:scale-[1.02]"
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20" />
               </div>
-              <div className="pulse-slow h-10 w-px bg-gradient-to-b from-silver to-transparent" />
+
+              {/* Archival caption on frame border */}
+              <div className="mt-3 flex items-center justify-between px-1 font-mono text-[0.52rem] tracking-[0.25em] uppercase text-silver-dim">
+                <span>Sol: Melek</span>
+                <span className="text-bone/50 tracking-widest">Salim Gümüş</span>
+                <span>Sağ: Şeytan</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Okka / Divit Kalem El Yazısı (Handwritten Dip-Pen Ink) */}
+          <div className="mt-12 sm:mt-14 max-w-2xl text-center px-4">
+            <div className="ink-script text-3xl sm:text-4xl md:text-5xl lg:text-[3.25rem] leading-[1.3] text-bone tracking-wide ink-bleed">
+              <span className="block">
+                “Sikemeyeceğiniz kadar tecrübeli,
+              </span>
+              <span className="block mt-1 sm:mt-2 text-silver/90">
+                sikemeyecek kadar yorgun.”
+              </span>
+            </div>
+
+            {/* Inscribed Principle: Gerekli Olanım */}
+            <div className="mt-7 flex flex-col items-center">
+              <div className="h-6 w-px bg-gradient-to-b from-silver-dim/60 to-transparent" />
+              <div className="mt-3 inline-flex items-center gap-2.5 rounded-full border border-bone/15 bg-bone/[0.04] px-5 py-2 backdrop-blur-md shadow-lg">
+                <span className="h-1.5 w-1.5 rounded-full bg-bone/80 animate-pulse" />
+                <p className="font-serif italic text-base sm:text-lg md:text-xl tracking-wide text-bone">
+                  “Ben iyi ya da kötü olan değilim. <span className="text-white font-semibold not-italic">Gerekli olanım.</span>”
+                </p>
+              </div>
+            </div>
+
+            {/* Subtle Scroll Cue */}
+            <div className="mt-12 flex flex-col items-center gap-2 opacity-50 hover:opacity-90 transition-opacity">
+              <span className="font-mono text-[0.52rem] uppercase tracking-[0.45em] text-silver-dim">
+                AŞAĞI KAYDIR
+              </span>
+              <div className="h-7 w-px bg-gradient-to-b from-silver-dim to-transparent" />
             </div>
           </div>
         </div>
