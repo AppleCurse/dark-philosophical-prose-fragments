@@ -1,0 +1,236 @@
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-display: "Cinzel", serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --color-ink: #060606;
+  --color-ash: #101010;
+  --color-smoke: #1a1a1a;
+  --color-bone: #ece9e2;
+  --color-silver: #b9b9b9;
+  --color-silver-dim: #6f6f6f;
+  --color-blood: #7a0c0c;
+}
+
+html,
+body {
+  background-color: #060606;
+  color: #ece9e2;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+}
+
+/* Film grain overlay */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  z-index: 100;
+  background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+}
+
+::selection {
+  background: #ece9e2;
+  color: #060606;
+}
+
+/* Drop cap */
+.drop-cap::first-letter {
+  font-family: "Cinzel", serif;
+  font-size: 5.5rem;
+  font-weight: 900;
+  float: left;
+  line-height: 0.85;
+  padding-right: 0.15em;
+  padding-top: 0.08em;
+  color: #b9b9b9;
+}
+
+/* Reveal on scroll */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(32px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal {
+  opacity: 0;
+  animation: fadeUp 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes heroIn {
+  from {
+    opacity: 0;
+    transform: scale(1.06);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.hero-img {
+  animation: heroIn 2.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes heroText {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+.hero-text {
+  opacity: 0;
+  animation: heroText 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes slowPulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+.pulse-slow {
+  animation: slowPulse 4s ease-in-out infinite;
+}
+
+/* Drifting mist */
+@keyframes drift {
+  0% {
+    transform: translateX(-4%) translateY(0);
+  }
+  50% {
+    transform: translateX(4%) translateY(-2%);
+  }
+  100% {
+    transform: translateX(-4%) translateY(0);
+  }
+}
+.mist {
+  animation: drift 26s ease-in-out infinite;
+}
+
+.vertical-text {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+.ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: #6f6f6f;
+}
+.ornament::before,
+.ornament::after {
+  content: "";
+  height: 1px;
+  background: linear-gradient(to right, transparent, #6f6f6f, transparent);
+  flex: 1;
+  max-width: 200px;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #060606;
+}
+::-webkit-scrollbar-thumb {
+  background: #2a2a2a;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #b9b9b9;
+}
+
+.section-mark {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: #6f6f6f;
+}
+
+/* Silver gradient text */
+.silver-text {
+  font-family: "Cinzel", serif;
+  font-weight: 900;
+  background: linear-gradient(180deg, #ffffff 0%, #d9d9d9 35%, #8a8a8a 70%, #4a4a4a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Image frames */
+.frame {
+  position: relative;
+  overflow: hidden;
+  background: #0d0d0d;
+}
+.frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.6s cubic-bezier(0.22, 1, 0.36, 1), filter 1.2s ease;
+  filter: grayscale(1) contrast(1.05);
+}
+.frame:hover img {
+  transform: scale(1.04);
+}
+.frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px rgba(236, 233, 226, 0.08);
+}
+
+/* Devil / Ben comparison rows */
+.duel-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  border-top: 1px solid rgba(236, 233, 226, 0.08);
+}
+.duel-row:last-child {
+  border-bottom: 1px solid rgba(236, 233, 226, 0.08);
+}
+@media (min-width: 768px) {
+  .duel-row {
+    grid-template-columns: 1fr 1px 1fr;
+  }
+}
+.duel-divider {
+  display: none;
+  background: linear-gradient(to bottom, transparent, rgba(236, 233, 226, 0.25), transparent);
+}
+@media (min-width: 768px) {
+  .duel-divider {
+    display: block;
+  }
+}
