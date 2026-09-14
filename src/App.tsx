@@ -341,16 +341,39 @@ export default function App() {
           <span className="h-px w-10 bg-silver-dim/40 md:w-16" />
         </div>
 
-        {/* Forensic Delil Panosu: Sol (Düşüş & Yangın), Orta (Denge), Sağ (Düşüşten Önce / Melek) */}
-        <div className="relative z-10 mx-auto w-full max-w-6xl flex flex-col items-center">
-          <div className="relative flex items-center justify-center gap-2 sm:gap-4 md:gap-6 lg:gap-8 w-full px-2">
+        {/* Forensic Delil Panosu: Sol Kazı + Sol Snapshots + Merkez + Sağ Snapshots + Sağ Kazı */}
+        <div className="relative z-10 mx-auto w-full max-w-7xl flex flex-col items-center">
+          
+          {/* Mobil / Tablet Duvar Kazısı (lg öncesi) */}
+          <div className="lg:hidden mb-8 max-w-md text-center px-4 select-none">
+            <p className="carved-wall-text text-[0.72rem] sm:text-xs uppercase font-light leading-relaxed">
+              Ben cennetin steril sakinlerinden değilim. Meleklerle aynı notaya susmam.
+            </p>
+            <div className="my-2.5 h-px w-16 mx-auto carved-groove-line opacity-70" />
+            <p className="carved-wall-text text-[0.72rem] sm:text-xs uppercase font-light leading-relaxed text-silver-dim">
+              Benim sesim, yasak meyveyi ısıran çene kemiğinden yükselir.
+            </p>
+          </div>
+
+          <div className="relative flex items-center justify-center gap-2 sm:gap-4 md:gap-5 lg:gap-6 xl:gap-8 w-full px-2">
             
-            {/* SOL TARAF: Düşüş & Yangın Halleri (2 Adet 1/4 Boyutlu Vesika) */}
+            {/* SOL DUVAR KAZISI (Desktop): İnce ve derin duvara kazınmış */}
+            <div className="hidden lg:flex flex-col justify-center max-w-[170px] xl:max-w-[210px] text-right pr-2 xl:pr-4 select-none self-center">
+              <p className="carved-wall-text text-xs xl:text-[0.82rem] font-light leading-relaxed">
+                Ben cennetin steril sakinlerinden değilim.
+              </p>
+              <div className="my-3.5 h-px w-14 ml-auto carved-groove-line opacity-75" />
+              <p className="carved-wall-text text-xs xl:text-[0.82rem] font-light leading-relaxed text-silver-dim/90">
+                Meleklerle aynı notaya susmam.
+              </p>
+            </div>
+
+            {/* SOL FOTOĞRAFLAR: Düşüş & Yangın (2 Adet 1/4 Boyutlu Vesika) */}
             <div className="flex flex-col gap-3 sm:gap-5 self-center">
               {/* Sol Üst: Yangın / Alevlenen Kanatlar */}
               <div className="relative group">
                 <RustedTack />
-                <div className="companion-snapshot rotate-[-3.5deg] bg-[#0c0c0c] p-1.5 sm:p-2 rounded-[2px] border border-white/10 w-[72px] sm:w-[95px] md:w-[115px] lg:w-[125px]">
+                <div className="companion-snapshot rotate-[-3.5deg] bg-[#0c0c0c] p-1.5 sm:p-2 rounded-[2px] border border-white/10 w-[68px] sm:w-[88px] md:w-[108px] lg:w-[118px]">
                   <div className="overflow-hidden relative aspect-[3/4] bg-black">
                     <img
                       src={fallFlameImg}
@@ -359,7 +382,7 @@ export default function App() {
                     />
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                   </div>
-                  <div className="mt-1 sm:mt-1.5 text-center font-mono text-[0.38rem] sm:text-[0.45rem] tracking-[0.2em] uppercase text-silver-dim/80">
+                  <div className="mt-1 sm:mt-1.5 text-center font-mono text-[0.36rem] sm:text-[0.42rem] tracking-[0.2em] uppercase text-silver-dim/80">
                     EK: 01 · YANGIN
                   </div>
                 </div>
@@ -368,7 +391,7 @@ export default function App() {
               {/* Sol Alt: Uçuruma Düşüş Anı */}
               <div className="relative group">
                 <RustedTack />
-                <div className="companion-snapshot rotate-[-1.8deg] bg-[#0c0c0c] p-1.5 sm:p-2 rounded-[2px] border border-white/10 w-[72px] sm:w-[95px] md:w-[115px] lg:w-[125px]">
+                <div className="companion-snapshot rotate-[-1.8deg] bg-[#0c0c0c] p-1.5 sm:p-2 rounded-[2px] border border-white/10 w-[68px] sm:w-[88px] md:w-[108px] lg:w-[118px]">
                   <div className="overflow-hidden relative aspect-[3/4] bg-black">
                     <img
                       src={fallAbyssImg}
@@ -377,7 +400,7 @@ export default function App() {
                     />
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                   </div>
-                  <div className="mt-1 sm:mt-1.5 text-center font-mono text-[0.38rem] sm:text-[0.45rem] tracking-[0.2em] uppercase text-silver-dim/80">
+                  <div className="mt-1 sm:mt-1.5 text-center font-mono text-[0.36rem] sm:text-[0.42rem] tracking-[0.2em] uppercase text-silver-dim/80">
                     EK: 02 · ÇAKILIŞ
                   </div>
                 </div>
@@ -388,7 +411,7 @@ export default function App() {
             <div className="relative group pt-4 mx-1 sm:mx-2">
               <BentNail />
               
-              <div className="hanging-portrait rotate-[-0.6deg] bg-[#0c0c0c] p-2 sm:p-3 md:p-4 rounded-[2px] border border-white/10 w-[200px] sm:w-[280px] md:w-[360px] lg:w-[410px] shadow-[0_30px_70px_-15px_rgba(0,0,0,0.95)]">
+              <div className="hanging-portrait rotate-[-0.6deg] bg-[#0c0c0c] p-2 sm:p-3 md:p-4 rounded-[2px] border border-white/10 w-[190px] sm:w-[260px] md:w-[330px] lg:w-[380px] shadow-[0_30px_70px_-15px_rgba(0,0,0,0.95)]">
                 <div className="overflow-hidden relative aspect-[3/4] bg-black">
                   <img
                     src={heroImg}
@@ -399,7 +422,7 @@ export default function App() {
                 </div>
 
                 {/* Archival caption on frame border */}
-                <div className="mt-2 sm:mt-3 flex items-center justify-between px-1 font-mono text-[0.44rem] sm:text-[0.52rem] tracking-[0.22em] uppercase text-silver-dim">
+                <div className="mt-2 sm:mt-3 flex items-center justify-between px-1 font-mono text-[0.42rem] sm:text-[0.5rem] tracking-[0.22em] uppercase text-silver-dim">
                   <span>Sol: Melek</span>
                   <span className="text-bone/50 tracking-widest font-semibold">Salim Gümüş</span>
                   <span>Sağ: Şeytan</span>
@@ -407,12 +430,12 @@ export default function App() {
               </div>
             </div>
 
-            {/* SAĞ TARAF: Düşüşten Önceki Halleri (Cennet & Saf Melek Hali - 2 Adet 1/4 Boyutlu Vesika) */}
+            {/* SAĞ FOTOĞRAFLAR: Düşüşten Önceki Halleri (Cennet & Saf Melek Hali - 2 Adet 1/4 Boyutlu Vesika) */}
             <div className="flex flex-col gap-3 sm:gap-5 self-center">
               {/* Sağ Üst: Düşmeden Önceki Saf Işık */}
               <div className="relative group">
                 <RustedTack />
-                <div className="companion-snapshot rotate-[3.2deg] bg-[#0c0c0c] p-1.5 sm:p-2 rounded-[2px] border border-white/10 w-[72px] sm:w-[95px] md:w-[115px] lg:w-[125px]">
+                <div className="companion-snapshot rotate-[3.2deg] bg-[#0c0c0c] p-1.5 sm:p-2 rounded-[2px] border border-white/10 w-[68px] sm:w-[88px] md:w-[108px] lg:w-[118px]">
                   <div className="overflow-hidden relative aspect-[3/4] bg-black">
                     <img
                       src={angelPureImg}
@@ -421,7 +444,7 @@ export default function App() {
                     />
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                   </div>
-                  <div className="mt-1 sm:mt-1.5 text-center font-mono text-[0.38rem] sm:text-[0.45rem] tracking-[0.2em] uppercase text-silver-dim/80">
+                  <div className="mt-1 sm:mt-1.5 text-center font-mono text-[0.36rem] sm:text-[0.42rem] tracking-[0.2em] uppercase text-silver-dim/80">
                     EK: 03 · KÖKEN
                   </div>
                 </div>
@@ -430,7 +453,7 @@ export default function App() {
               {/* Sağ Alt: Fırtına Başlarkenki Eşik */}
               <div className="relative group">
                 <RustedTack />
-                <div className="companion-snapshot rotate-[4.6deg] bg-[#0c0c0c] p-1.5 sm:p-2 rounded-[2px] border border-white/10 w-[72px] sm:w-[95px] md:w-[115px] lg:w-[125px]">
+                <div className="companion-snapshot rotate-[4.6deg] bg-[#0c0c0c] p-1.5 sm:p-2 rounded-[2px] border border-white/10 w-[68px] sm:w-[88px] md:w-[108px] lg:w-[118px]">
                   <div className="overflow-hidden relative aspect-[3/4] bg-black">
                     <img
                       src={angelStormImg}
@@ -439,11 +462,23 @@ export default function App() {
                     />
                     <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                   </div>
-                  <div className="mt-1 sm:mt-1.5 text-center font-mono text-[0.38rem] sm:text-[0.45rem] tracking-[0.2em] uppercase text-silver-dim/80">
+                  <div className="mt-1 sm:mt-1.5 text-center font-mono text-[0.36rem] sm:text-[0.42rem] tracking-[0.2em] uppercase text-silver-dim/80">
                     EK: 04 · MASUMİYET
                   </div>
                 </div>
               </div>
+            </div>
+
+            {/* SAĞ DUVAR KAZISI (Desktop): İnce ve derin duvara kazınmış */}
+            <div className="hidden lg:flex flex-col justify-center max-w-[170px] xl:max-w-[210px] text-left pl-2 xl:pl-4 select-none self-center">
+              <p className="carved-wall-text text-xs xl:text-[0.82rem] font-light leading-relaxed">
+                Benim sesim,
+              </p>
+              <div className="my-3.5 h-px w-14 mr-auto carved-groove-line opacity-75" />
+              <p className="carved-wall-text text-xs xl:text-[0.82rem] font-light leading-relaxed text-silver-dim/90">
+                yasak meyveyi ısıran<br />
+                çene kemiğinden yükselir.
+              </p>
             </div>
 
           </div>

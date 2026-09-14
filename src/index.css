@@ -340,3 +340,33 @@ body::before {
   box-shadow: 0 0 8px rgba(241, 238, 231, 0.6);
   animation: inkNibPulse 0.75s infinite ease-in-out;
 }
+
+/* Deep Thin Chiseled / Engraved Inscription on Concrete */
+.carved-wall-text {
+  color: #070709;
+  font-family: "Cinzel", Georgia, serif;
+  font-weight: 400;
+  letter-spacing: 0.28em;
+  text-shadow: 
+    0 -1.8px 1.2px rgba(0, 0, 0, 0.98),
+    0 1px 0.6px rgba(236, 233, 226, 0.24),
+    -1px 0 1px rgba(0, 0, 0, 0.85);
+  line-height: 2;
+}
+
+.carved-wall-italic {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-style: italic;
+  font-weight: 400;
+  color: #08080a;
+  letter-spacing: 0.1em;
+  text-shadow: 
+    0 -1.5px 1px rgba(0, 0, 0, 0.98),
+    0 1px 0.7px rgba(236, 233, 226, 0.25);
+}
+
+.carved-groove-line {
+  height: 1px;
+  background: rgba(0, 0, 0, 0.95);
+  box-shadow: 0 1px 0.5px rgba(236, 233, 226, 0.15);
+}
