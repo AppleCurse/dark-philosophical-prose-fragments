@@ -2,6 +2,12 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import heroImg from "./assets/salim_portrait_feather.jpg";
 import salimDarkImg from "./assets/salim_dark_raven.jpg";
 import salimWhiteImg from "./assets/salim_white_raven.jpg";
+import fallAbyssImg from "./assets/salim_fall_abyss.jpg";
+import fallFlameImg from "./assets/salim_fall_flame.jpg";
+import fallGroundImg from "./assets/salim_fall_ground.jpg";
+import fallSkyImg from "./assets/salim_fall_sky.webp";
+import angelPureImg from "./assets/salim_angel_pure.webp";
+import angelStormImg from "./assets/salim_angel_storm.jpg";
 import bedImg from "./assets/bed.jpg";
 import soilImg from "./assets/soil.jpg";
 import ravenImg from "./assets/raven.jpg";
@@ -335,32 +341,54 @@ export default function App() {
           <span className="h-px w-10 bg-silver-dim/40 md:w-16" />
         </div>
 
-        {/* Forensic Delil Panosu: Main Portrait flanked by two 1/4 sized companion snapshots */}
-        <div className="relative z-10 mx-auto w-full max-w-5xl flex flex-col items-center">
-          <div className="relative flex items-center justify-center gap-3 sm:gap-6 md:gap-8 w-full">
-            {/* Left Companion Snapshot (1/4 size): Salim White Raven */}
-            <div className="relative group self-center sm:self-start sm:mt-10">
-              <RustedTack />
-              <div className="companion-snapshot rotate-[-4.2deg] bg-[#0c0c0c] p-1.5 sm:p-2 rounded-[2px] border border-white/10 w-[78px] sm:w-[105px] md:w-[125px]">
-                <div className="overflow-hidden relative aspect-[3/4] bg-black">
-                  <img
-                    src={salimWhiteImg}
-                    alt="Salim Gümüş — Beyaz kanat ve kuzgun"
-                    className="h-full w-full object-cover object-center filter contrast-[1.08] brightness-[0.96] transition-transform duration-500 group-hover:scale-[1.04]"
-                  />
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+        {/* Forensic Delil Panosu: Sol (Düşüş & Yangın), Orta (Denge), Sağ (Düşüşten Önce / Melek) */}
+        <div className="relative z-10 mx-auto w-full max-w-6xl flex flex-col items-center">
+          <div className="relative flex items-center justify-center gap-2 sm:gap-4 md:gap-6 lg:gap-8 w-full px-2">
+            
+            {/* SOL TARAF: Düşüş & Yangın Halleri (2 Adet 1/4 Boyutlu Vesika) */}
+            <div className="flex flex-col gap-3 sm:gap-5 self-center">
+              {/* Sol Üst: Yangın / Alevlenen Kanatlar */}
+              <div className="relative group">
+                <RustedTack />
+                <div className="companion-snapshot rotate-[-3.5deg] bg-[#0c0c0c] p-1.5 sm:p-2 rounded-[2px] border border-white/10 w-[72px] sm:w-[95px] md:w-[115px] lg:w-[125px]">
+                  <div className="overflow-hidden relative aspect-[3/4] bg-black">
+                    <img
+                      src={fallFlameImg}
+                      alt="Salim Gümüş — Alevlenen kanatlar"
+                      className="h-full w-full object-cover object-center filter contrast-[1.08] brightness-[0.96] transition-transform duration-500 group-hover:scale-[1.04]"
+                    />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  </div>
+                  <div className="mt-1 sm:mt-1.5 text-center font-mono text-[0.38rem] sm:text-[0.45rem] tracking-[0.2em] uppercase text-silver-dim/80">
+                    EK: 01 · YANGIN
+                  </div>
                 </div>
-                <div className="mt-1.5 text-center font-mono text-[0.42rem] sm:text-[0.46rem] tracking-[0.2em] uppercase text-silver-dim/80">
-                  EK: 01 · IŞIK
+              </div>
+
+              {/* Sol Alt: Uçuruma Düşüş Anı */}
+              <div className="relative group">
+                <RustedTack />
+                <div className="companion-snapshot rotate-[-1.8deg] bg-[#0c0c0c] p-1.5 sm:p-2 rounded-[2px] border border-white/10 w-[72px] sm:w-[95px] md:w-[115px] lg:w-[125px]">
+                  <div className="overflow-hidden relative aspect-[3/4] bg-black">
+                    <img
+                      src={fallAbyssImg}
+                      alt="Salim Gümüş — Fırtınaya ve uçuruma çakılış"
+                      className="h-full w-full object-cover object-center filter contrast-[1.08] brightness-[0.96] transition-transform duration-500 group-hover:scale-[1.04]"
+                    />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  </div>
+                  <div className="mt-1 sm:mt-1.5 text-center font-mono text-[0.38rem] sm:text-[0.45rem] tracking-[0.2em] uppercase text-silver-dim/80">
+                    EK: 02 · ÇAKILIŞ
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Central Main Portrait (Full piece with bent rusted nail) */}
-            <div className="relative group pt-4">
+            {/* ORTA: Ana Vesika (Denge: Yarı Siyah, Yarı Beyaz, Paslı Çiviyle Çakılı) */}
+            <div className="relative group pt-4 mx-1 sm:mx-2">
               <BentNail />
               
-              <div className="hanging-portrait rotate-[-1deg] bg-[#0c0c0c] p-2.5 sm:p-3.5 md:p-4 rounded-[2px] border border-white/10 w-[240px] sm:w-[320px] md:w-[410px] shadow-[0_30px_70px_-15px_rgba(0,0,0,0.95)]">
+              <div className="hanging-portrait rotate-[-0.6deg] bg-[#0c0c0c] p-2 sm:p-3 md:p-4 rounded-[2px] border border-white/10 w-[200px] sm:w-[280px] md:w-[360px] lg:w-[410px] shadow-[0_30px_70px_-15px_rgba(0,0,0,0.95)]">
                 <div className="overflow-hidden relative aspect-[3/4] bg-black">
                   <img
                     src={heroImg}
@@ -371,31 +399,53 @@ export default function App() {
                 </div>
 
                 {/* Archival caption on frame border */}
-                <div className="mt-2.5 sm:mt-3 flex items-center justify-between px-1 font-mono text-[0.48rem] sm:text-[0.52rem] tracking-[0.22em] uppercase text-silver-dim">
+                <div className="mt-2 sm:mt-3 flex items-center justify-between px-1 font-mono text-[0.44rem] sm:text-[0.52rem] tracking-[0.22em] uppercase text-silver-dim">
                   <span>Sol: Melek</span>
-                  <span className="text-bone/50 tracking-widest">Salim Gümüş</span>
+                  <span className="text-bone/50 tracking-widest font-semibold">Salim Gümüş</span>
                   <span>Sağ: Şeytan</span>
                 </div>
               </div>
             </div>
 
-            {/* Right Companion Snapshot (1/4 size): Salim Dark Raven */}
-            <div className="relative group self-center sm:self-start sm:mt-8">
-              <RustedTack />
-              <div className="companion-snapshot rotate-[4.5deg] bg-[#0c0c0c] p-1.5 sm:p-2 rounded-[2px] border border-white/10 w-[78px] sm:w-[105px] md:w-[125px]">
-                <div className="overflow-hidden relative aspect-[3/4] bg-black">
-                  <img
-                    src={salimDarkImg}
-                    alt="Salim Gümüş — Kara kanat ve duman"
-                    className="h-full w-full object-cover object-center filter contrast-[1.08] brightness-[0.96] transition-transform duration-500 group-hover:scale-[1.04]"
-                  />
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+            {/* SAĞ TARAF: Düşüşten Önceki Halleri (Cennet & Saf Melek Hali - 2 Adet 1/4 Boyutlu Vesika) */}
+            <div className="flex flex-col gap-3 sm:gap-5 self-center">
+              {/* Sağ Üst: Düşmeden Önceki Saf Işık */}
+              <div className="relative group">
+                <RustedTack />
+                <div className="companion-snapshot rotate-[3.2deg] bg-[#0c0c0c] p-1.5 sm:p-2 rounded-[2px] border border-white/10 w-[72px] sm:w-[95px] md:w-[115px] lg:w-[125px]">
+                  <div className="overflow-hidden relative aspect-[3/4] bg-black">
+                    <img
+                      src={angelPureImg}
+                      alt="Salim Gümüş — Düşmeden önce, saf beyaz kanatlar"
+                      className="h-full w-full object-cover object-center filter contrast-[1.08] brightness-[0.96] transition-transform duration-500 group-hover:scale-[1.04]"
+                    />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  </div>
+                  <div className="mt-1 sm:mt-1.5 text-center font-mono text-[0.38rem] sm:text-[0.45rem] tracking-[0.2em] uppercase text-silver-dim/80">
+                    EK: 03 · KÖKEN
+                  </div>
                 </div>
-                <div className="mt-1.5 text-center font-mono text-[0.42rem] sm:text-[0.46rem] tracking-[0.2em] uppercase text-silver-dim/80">
-                  EK: 02 · GÖLGE
+              </div>
+
+              {/* Sağ Alt: Fırtına Başlarkenki Eşik */}
+              <div className="relative group">
+                <RustedTack />
+                <div className="companion-snapshot rotate-[4.6deg] bg-[#0c0c0c] p-1.5 sm:p-2 rounded-[2px] border border-white/10 w-[72px] sm:w-[95px] md:w-[115px] lg:w-[125px]">
+                  <div className="overflow-hidden relative aspect-[3/4] bg-black">
+                    <img
+                      src={angelStormImg}
+                      alt="Salim Gümüş — Fırtına altında beyaz kanatlar"
+                      className="h-full w-full object-cover object-center filter contrast-[1.08] brightness-[0.96] transition-transform duration-500 group-hover:scale-[1.04]"
+                    />
+                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  </div>
+                  <div className="mt-1 sm:mt-1.5 text-center font-mono text-[0.38rem] sm:text-[0.45rem] tracking-[0.2em] uppercase text-silver-dim/80">
+                    EK: 04 · MASUMİYET
+                  </div>
                 </div>
               </div>
             </div>
+
           </div>
 
           {/* Real-time handwriting ink text */}
@@ -435,6 +485,26 @@ export default function App() {
               <DuelRow devil="düşürdü." me="yerden kalkıp yeniden yazdım." />
               <DuelRow devil="yemin etti." me="imzaladım." />
               <DuelRow devil="teklif etti." me="sistemi kurdum." />
+            </div>
+
+            {/* Yerden Kalkış Vesikası */}
+            <div className="mt-12 mx-auto max-w-xl overflow-hidden rounded-[2px] border border-white/10 bg-[#0c0c0c] p-2.5 sm:p-3 shadow-2xl">
+              <div className="relative aspect-[16/11] overflow-hidden bg-black">
+                <img
+                  src={fallGroundImg}
+                  alt="Yerden kalkıp yeniden yazdım — Salim Gümüş"
+                  className="h-full w-full object-cover object-center filter contrast-[1.08] brightness-[0.96]"
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                <div className="absolute bottom-2.5 left-3.5 right-3.5 flex justify-between items-end">
+                  <span className="font-mono text-[0.5rem] uppercase tracking-[0.25em] text-silver-dim">
+                    Duruş · Yeniden İnşa
+                  </span>
+                  <span className="font-serif italic text-xs sm:text-sm text-bone">
+                    “Yerden kalkıp yeniden yazdım.”
+                  </span>
+                </div>
+              </div>
             </div>
           </Reveal>
 
