@@ -17,6 +17,17 @@ export default defineConfig({
   base: "/dark-philosophical-prose-fragments/",
   plugins: [react(), tailwindcss()],
   resolve: { alias: { "@": path.resolve(dirname, "src") } },
+  server: {
+    host: true,
+    port: 5173,
+    // Arena canlı önizlemesi ve proxy'ler: {port}-{sandbox}.e2b.app gibi host'lar gelir
+    allowedHosts: [".e2b.app", ".ngrok-free.app", ".loca.lt"],
+  },
+  preview: {
+    host: true,
+    port: 4173,
+    allowedHosts: [".e2b.app", ".ngrok-free.app", ".loca.lt"],
+  },
   build: {
     // görseller asla satır içi olmasın: ayrı dosya → cache'lenebilir, ertelenebilir
     assetsInlineLimit: 0,
