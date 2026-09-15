@@ -108,7 +108,7 @@ export const site: Site = {
   datePublished: "2026-09-14",
   lang: "tr",
   // doldurulunca footer'da görünür olur (bkz. README "handle birliği")
-  handle: { ig: "", x: "", yt: "", mail: "fallenvice@soulvespera.com.tr" },
+  handle: { ig: "fallenvice", x: "", yt: "", mail: "fallenvice@soulvespera.com.tr" },
 };
 
 export const vesika: Vesika = {
