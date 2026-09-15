@@ -740,4 +740,41 @@ identify -format "%wx%h %[size]\n" src/assets/raven.jpg  # 2608x1456 7.05513MB
 # data-URI envanteri ve eşleştirme (bu raporda kullanılan Python tekniği §2.1)
 ```
 
-*Not:* `dist/` `.gitignore`’da; bu rapor repoya yalnızca `docs/AUDIT.md` olarak girdi, kaynak koda dokunulmadı.
+*Not:* Bu rapor ilk teslimde yalnızca `docs/AUDIT.md` olarak girdi, kaynak koda dokunulmadı. §8'de
+listelenen P0/P1 maddeleri aynı oturumda uygulandı; §7'deki doğrulama komutları o **önceki**
+durumu ölçer (bugün: `prefers-reduced-motion` 6 adet, `<h1>` 1 adet, `raven.jpg` repoda yok).
+
+
+---
+
+## 8. 15.09.2026 — P0/P1 uygulandı (uygulama notu)
+
+Raporda "yapılacak" olarak duranların büyük kısmı aynı gün uygulandı. Ayrıntı, gerekçe ve
+ölçümler: **[`docs/CEVAP-MIMARI.md`](CEVAP-MIMARI.md)** · kurulum/uygulama: **[`README.md`](../README.md)**
+
+| Madde | Durum | Ölçülen sonuç |
+|---|---|---|
+| P0-1 görsel hattı (gri + render boyutu + webp) | ✅ | 8,35 MB → **0,54 MB** |
+| P0-2 head: meta/OG/twitter/canonical/JSON-LD/theme-color | ✅ | paylaşım kartı doğdu |
+| P0-3 bot'ların okuduğu içerik (prerender) | ✅ | JS'siz **471 kelime** statik metin |
+| P0-4 `og.png` + favicon + apple-touch-icon + `llms.txt` | ✅ | `public/` (og.png 82 KB) |
+| P0-5 `<h1>`/`<main>`/`aria-labelledby`/skip-link/`robots`/`sitemap` | ✅ | `App.tsx`, `public/` |
+| P0-6 typecheck + boyut muhafızı + CI | ✅ | `npm run check`; 4×TS6133 → **0** |
+| P1-7 reduced-motion, `scripting:none`, `hover:hover`, `:focus-visible`, `aria-hidden` SVG | ✅ | `index.css` |
+| P1-8 `İ` yaması (`cinzel-tr.woff2`) + kendi barındırılan alt küme fontlar | ✅ | 13 `@font-face`, 140 KB, dış istek 0 |
+| P1-9 InkWriter: görünüme girince başlar + "↺ yeniden yaz" + `Stage` tipi + deterministik ritim | ✅ | `islands.tsx` |
+| P1-10 `useScroll` → ref + CSS custom property (`y` silindi) | ✅ | kare başına 0 re-render |
+| P1-11 `IŞIĞI AÇ` (kazı kontrastı) + paylaş butonu | ✅ | `Tools` adası |
+| P1-12 CTA: profil linkleri (doluysa görünür), "alıntıyı kopyala", defter notu, lisans metni | ✅ | her bölümde `copy` |
+| P2-13 içerik → `src/content.ts` + gönderi üretici | ✅ | `scripts/make-posts.mjs` → `posts/` |
+| P2-14 arşiv rotaları (`/vesika/NN`) | ⏳ | yapı hazır; Vesika 02'de ~30 satır |
+| P2-15 bileşen bölme + ESLint/Prettier | ⏳ | öneri duruyor |
+| P2-16 duvar dokusu/grain pre-render | ⏳ | denendi, görsel kalite yetersiz → listede kaldı |
+| P2-17 `hero.jpg` (yan profil) ile hero'yu yeniden kurma | ⚠️ kısmi | `salim_fall_sky` EK:04'e girdi; yan profil `assets-src/`'de bekliyor |
+| P2-18 EN sürümü | ⏳ | veri modelinde `lang` alanı hazır |
+| P3-19..25 domain, ham görsel stratejisi, ölçüm, PR önizleme, borç turu | ⏳ | `docs/LISENS.md` yazıldı; ham kareler repodan çıkarıldı (19 MB → 8 MB depo) |
+
+Ölçülen toplam etki: paket **11,94 MB → 1,13 MB**; ilk HTML isteği **8,48 MB gzip → 17,7 KB gzip**;
+`dist` içindeki satır içi (`data:`) görsel sayısı **10 → 0**.
+
+Doğrulama: `npm run check` (typecheck + prerender build + bütçe) ve CI'daki "statik metin var mı" adımı.

@@ -1,0 +1,11 @@
+{
+  "name": "Vesika — BEN PRENSİP",
+  "short_name": "Vesika",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#060606",
+  "theme_color": "#060606",
+  "icons": [
+    { "src": "./favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
