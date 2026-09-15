@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --font-serif: "Cormorant Garamond", Georgia, serif;
-  --font-display: "Cinzel", serif;
-  --font-sans: "Inter", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
-  --font-hand: "Caveat", cursive, sans-serif;
-  --font-script: "Marck Script", cursive, serif;
+  /* Kendi barındırılan, alt kümeleştirilmiş fontlar — bkz. src/fonts/fonts.css
+     ("Cinzel TR" yalnızca İ (U+0130) için devreye girer; Cinzel'de bu glif yok.) */
+  --font-serif: "Cormorant Garamond Variable", "Cormorant Garamond", Georgia, serif;
+  --font-display: "Cinzel Variable", "Cinzel TR", "Cinzel", Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-hand: "Caveat", "Segoe Script", cursive;
 
   --color-ink: #060606;
   --color-ash: #101010;
@@ -17,38 +17,61 @@
   --color-blood: #7a0c0c;
 }
 
-html,
-body {
+html {
   background-color: #060606;
   color: #ece9e2;
-  font-family: "Cormorant Garamond", Georgia, serif;
+  font-family: var(--font-serif);
   -webkit-font-smoothing: antialiased;
   scroll-behavior: smooth;
+  /* kökte overflow-x kullanmak md:sticky'yi kırabilir (docs/AUDIT.md §2.7/4) */
+  overflow-x: clip;
 }
 
 body {
   min-height: 100vh;
+  background-color: #060606;
+  color: #ece9e2;
+  font-family: var(--font-serif);
 }
 
-/* Film grain overlay */
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.05;
-  z-index: 100;
-  background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
-}
-
+/* ---------- odak / seçim ---------- */
 ::selection {
   background: #ece9e2;
   color: #060606;
 }
+:focus-visible {
+  outline: 1px solid #ece9e2;
+  outline-offset: 3px;
+  border-radius: 1px;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
 
-/* Drop cap */
+/* ---------- film grain (döşenen küçük doku, tam ekran filtre yok) ---------- */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: url("./assets/grain.png");
+  background-size: 256px 256px;
+  mix-blend-mode: screen;
+}
+
+/* ---------- tipografik detaylar ---------- */
 .drop-cap::first-letter {
-  font-family: "Cinzel", serif;
+  font-family: var(--font-display);
   font-size: 5.5rem;
   font-weight: 900;
   float: left;
@@ -56,83 +79,6 @@ body::before {
   padding-right: 0.15em;
   padding-top: 0.08em;
   color: #b9b9b9;
-}
-
-/* Reveal on scroll */
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(32px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.reveal {
-  opacity: 0;
-  animation: fadeUp 1.2s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-@keyframes heroIn {
-  from {
-    opacity: 0;
-    transform: scale(1.06);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-.hero-img {
-  animation: heroIn 2.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-@keyframes heroText {
-  from {
-    opacity: 0;
-    transform: translateY(24px);
-    filter: blur(6px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
-  }
-}
-.hero-text {
-  opacity: 0;
-  animation: heroText 1.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-}
-
-@keyframes slowPulse {
-  0%,
-  100% {
-    opacity: 0.35;
-  }
-  50% {
-    opacity: 0.9;
-  }
-}
-.pulse-slow {
-  animation: slowPulse 4s ease-in-out infinite;
-}
-
-/* Drifting mist */
-@keyframes drift {
-  0% {
-    transform: translateX(-4%) translateY(0);
-  }
-  50% {
-    transform: translateX(4%) translateY(-2%);
-  }
-  100% {
-    transform: translateX(-4%) translateY(0);
-  }
-}
-.mist {
-  animation: drift 26s ease-in-out infinite;
 }
 
 .vertical-text {
@@ -171,155 +117,147 @@ body::before {
 }
 
 .section-mark {
-  font-family: "JetBrains Mono", monospace;
+  font-family: var(--font-mono);
   font-size: 0.68rem;
   letter-spacing: 0.35em;
   text-transform: uppercase;
   color: #6f6f6f;
 }
 
-/* Silver gradient text */
 .silver-text {
-  font-family: "Cinzel", serif;
+  font-family: var(--font-display);
   font-weight: 900;
   background: linear-gradient(180deg, #ffffff 0%, #d9d9d9 35%, #8a8a8a 70%, #4a4a4a 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  /* gradyan + saydamlık + animasyon birlikte ciddi paint maliyeti üretmesin */
+  contain: paint;
 }
 
-/* Image frames */
-.frame {
-  position: relative;
-  overflow: hidden;
-  background: #0d0d0d;
-}
-.frame img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 1.6s cubic-bezier(0.22, 1, 0.36, 1), filter 1.2s ease;
-  filter: grayscale(1) contrast(1.05);
-}
-.frame:hover img {
-  transform: scale(1.04);
-}
-.frame::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  box-shadow: inset 0 0 0 1px rgba(236, 233, 226, 0.08);
-}
-
-/* Devil / Ben comparison rows */
-.duel-row {
-  display: grid;
-  grid-template-columns: 1fr;
-  border-top: 1px solid rgba(236, 233, 226, 0.08);
-}
-.duel-row:last-child {
-  border-bottom: 1px solid rgba(236, 233, 226, 0.08);
-}
-@media (min-width: 768px) {
-  .duel-row {
-    grid-template-columns: 1fr 1px 1fr;
+/* ---------- hero girişi ---------- */
+@keyframes heroIn {
+  from {
+    opacity: 0;
+    transform: scale(1.06);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }
-.duel-divider {
-  display: none;
-  background: linear-gradient(to bottom, transparent, rgba(236, 233, 226, 0.25), transparent);
+.hero-img {
+  animation: heroIn 2.4s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
-@media (min-width: 768px) {
-  .duel-divider {
-    display: block;
+
+@keyframes heroText {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+    filter: blur(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+.hero-text {
+  animation: heroText 1.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes slowPulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.9;
+  }
+}
+.pulse-slow {
+  animation: slowPulse 4s ease-in-out infinite;
+}
+
+/* ---------- kaydırma animasyonları ----------
+ * Eskiden her bölüm için ayrı IntersectionObserver + setState kullanılıyordu ve
+ * `.reveal { opacity: 0 }` yüzünden JS çalışmazsa içerik KALICI olarak görünmezdi.
+ * Artık: görünüm-temelli CSS animasyonu, JS yalnızca html.js-io bayrağını koyar. */
+@keyframes revealFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
   }
 }
 
-/* Brutalist Raw Concrete & Kaba Sıva Wall Texture */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    html.js-io .reveal {
+      animation: revealFade 1s linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 55%;
+    }
+  }
+}
+
+@keyframes heroInFallback {
+  to {
+    opacity: 1;
+  }
+}
+
+/* ---------- "IŞIĞI AÇ": kazınmış duvar yazısını okunur kılar ---------- */
+.carved-wall-text,
+.carved-wall-italic {
+  transition: color 0.5s ease, text-shadow 0.5s ease;
+}
+html[data-light] .carved-wall-text {
+  color: #d7d4cc;
+  text-shadow:
+    0 -1px 0.5px rgba(0, 0, 0, 0.6),
+    0 1px 0.5px rgba(0, 0, 0, 0.8);
+}
+html[data-light] .wall-surface {
+  filter: brightness(1.55);
+}
+html[data-light] body::after {
+  opacity: 0.22;
+}
+
+/* ---------- Brutalist / kaba sıva duvar ---------- */
 .wall-surface {
   background-color: #0b0b0d;
   background-image:
-    /* Bare overhead cold bulb lighting the concrete wall */
     radial-gradient(ellipse at 50% 18%, rgba(225, 220, 210, 0.09) 0%, transparent 60%),
-    /* Uneven kaba sıva plaster stains & trowel variations */
     radial-gradient(ellipse at 15% 45%, rgba(30, 30, 35, 0.6) 0%, transparent 55%),
     radial-gradient(ellipse at 85% 60%, rgba(25, 25, 30, 0.7) 0%, transparent 50%),
     radial-gradient(circle at 50% 85%, rgba(0, 0, 0, 0.8) 0%, transparent 60%),
-    /* Micro-pores and aggregate sand in the rough plaster */
     url("data:image/svg+xml,%3Csvg viewBox='0 0 500 500' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='kabaSiva'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0.85  0 0 0 0 0.82  0 0 0 0 0.78  0 0 0 0.15 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23kabaSiva)'/%3E%3C/svg%3E"),
-    /* Deep pitting / concrete crater marks */
     url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='craters'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.15' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1 1 1 0 -0.7'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23craters)' opacity='0.35'/%3E%3C/svg%3E");
   box-shadow: inset 0 0 160px rgba(0, 0, 0, 0.95);
+  transition: filter 0.5s ease;
 }
 
-/* Handcrafted Okka / Divit Ink Pen Effects */
+/* ---------- divit / mürekkep ---------- */
 .ink-script {
-  font-family: "Caveat", "Marck Script", cursive;
+  font-family: var(--font-hand);
   font-feature-settings: "kern" 1;
   text-rendering: optimizeLegibility;
 }
 
 .ink-bleed {
   color: #f1eee7;
-  text-shadow: 
+  text-shadow:
     0 0 0.5px rgba(236, 233, 226, 0.85),
     0 0 8px rgba(236, 233, 226, 0.15),
     0 1px 2px rgba(0, 0, 0, 0.9);
 }
 
-.ink-spill {
-  position: relative;
-}
-
-.ink-spill::after {
-  content: "";
-  display: inline-block;
-  width: 4px;
-  height: 6px;
-  background: #ece9e2;
-  border-radius: 50% 50% 60% 60%;
-  margin-left: 6px;
-  vertical-align: middle;
-  opacity: 0.6;
-  box-shadow: 0 0 4px rgba(255, 255, 255, 0.3);
-}
-
-/* Hanging Photo Frame Depth */
-.hanging-portrait {
-  position: relative;
-  box-shadow: 
-    0 35px 60px -15px rgba(0, 0, 0, 0.95),
-    0 15px 30px -10px rgba(0, 0, 0, 0.8),
-    0 0 0 1px rgba(255, 255, 255, 0.08);
-  transform-origin: 50% 0%;
-  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
-}
-
-.hanging-portrait:hover {
-  transform: rotate(0deg) scale(1.01);
-}
-
-/* Companion 1/4 Sized Snapshots */
-.companion-snapshot {
-  position: relative;
-  box-shadow: 
-    0 20px 35px -10px rgba(0, 0, 0, 0.95),
-    0 8px 16px -6px rgba(0, 0, 0, 0.8),
-    0 0 0 1px rgba(255, 255, 255, 0.06);
-  transform-origin: 50% 0%;
-  transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.5s ease;
-}
-
-.companion-snapshot:hover {
-  transform: scale(1.05) rotate(0deg) !important;
-  z-index: 25;
-}
-
-/* Active Ink Pen Nib Cursor */
 @keyframes inkNibPulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.9;
     transform: scale(1);
   }
@@ -328,7 +266,6 @@ body::before {
     transform: scale(0.85);
   }
 }
-
 .ink-nib-cursor {
   display: inline-block;
   width: 3px;
@@ -341,32 +278,131 @@ body::before {
   animation: inkNibPulse 0.75s infinite ease-in-out;
 }
 
-/* Deep Thin Chiseled / Engraved Inscription on Concrete */
+/* ---------- kazınmış yazı ---------- */
 .carved-wall-text {
   color: #070709;
-  font-family: "Cinzel", Georgia, serif;
+  font-family: var(--font-display);
   font-weight: 400;
   letter-spacing: 0.28em;
-  text-shadow: 
+  text-shadow:
     0 -1.8px 1.2px rgba(0, 0, 0, 0.98),
     0 1px 0.6px rgba(236, 233, 226, 0.24),
     -1px 0 1px rgba(0, 0, 0, 0.85);
   line-height: 2;
 }
 
-.carved-wall-italic {
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-style: italic;
-  font-weight: 400;
-  color: #08080a;
-  letter-spacing: 0.1em;
-  text-shadow: 
-    0 -1.5px 1px rgba(0, 0, 0, 0.98),
-    0 1px 0.7px rgba(236, 233, 226, 0.25);
-}
-
 .carved-groove-line {
   height: 1px;
   background: rgba(0, 0, 0, 0.95);
   box-shadow: 0 1px 0.5px rgba(236, 233, 226, 0.15);
+}
+
+/* ---------- görsel çerçeveler ---------- */
+.frame {
+  position: relative;
+  overflow: hidden;
+  background: #0d0d0d;
+}
+.frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.6s cubic-bezier(0.22, 1, 0.36, 1);
+  filter: grayscale(1) contrast(1.05);
+}
+/* imleç gerçekten varsa hover: dokunmatikte "takılı kalan" durum olmasın */
+@media (hover: hover) {
+  .frame:hover img {
+    transform: scale(1.04);
+  }
+}
+.frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 1px rgba(236, 233, 226, 0.08);
+}
+
+.hanging-portrait,
+.companion-snapshot {
+  position: relative;
+}
+.hanging-portrait {
+  box-shadow:
+    0 35px 60px -15px rgba(0, 0, 0, 0.95),
+    0 15px 30px -10px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
+  transition: scale 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.companion-snapshot {
+  box-shadow:
+    0 20px 35px -10px rgba(0, 0, 0, 0.95),
+    0 8px 16px -6px rgba(0, 0, 0, 0.8),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
+  transition: scale 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.5s ease;
+}
+@media (hover: hover) {
+  .hanging-portrait:hover {
+    scale: 1.01;
+  }
+  .companion-snapshot:hover {
+    scale: 1.05;
+    z-index: 25;
+  }
+}
+
+/* ---------- O / Ben düello satırları ---------- */
+.duel-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  border-top: 1px solid rgba(236, 233, 226, 0.08);
+}
+.duel-row:last-child {
+  border-bottom: 1px solid rgba(236, 233, 226, 0.08);
+}
+.duel-divider {
+  display: none;
+  background: linear-gradient(to bottom, transparent, rgba(236, 233, 226, 0.25), transparent);
+}
+@media (min-width: 768px) {
+  .duel-row {
+    grid-template-columns: 1fr 1px 1fr;
+  }
+  .duel-divider {
+    display: block;
+  }
+}
+
+/* ---------- hareket hassasiyeti: içerik asla animasyona bağlı kalmasın ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .reveal,
+  .hero-text,
+  .hero-img {
+    opacity: 1 !important;
+    animation: none !important;
+  }
+  .ink-nib-cursor {
+    display: none;
+  }
+}
+
+/* ---------- JS yoksa: her şey görünür ve tam metin ---------- */
+@media (scripting: none) {
+  .reveal {
+    opacity: 1 !important;
+    animation: none !important;
+  }
+  [data-island]:empty {
+    display: none;
+  }
 }

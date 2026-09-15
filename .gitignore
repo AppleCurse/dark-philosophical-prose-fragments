@@ -1,4 +1,15 @@
 node_modules
 dist
+prerender
+posts
+.venv
+*.log
 .DS_Store
 *.local
+.env
+.env.*
+.idea
+.vscode/*
+!.vscode/extensions.json
+coverage
+stats.html

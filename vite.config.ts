@@ -1,19 +1,37 @@
-import path from "path";
-import { fileURLToPath } from "url";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
-import { viteSingleFile } from "vite-plugin-singlefile";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// https://vite.dev/config/
+/**
+ * NOT: `vite-plugin-singlefile` bilinçli olarak kaldırıldı.
+ * Tek dosyaya gömülü base64 görseller 11,9 MB'lık bir index.html üretiyordu;
+ * lazy-load, cache ve responsive image imkânını sıfırlıyordu (docs/AUDIT.md §2.1).
+ * Statik prerender'ı `scripts/prerender.mjs` yapıyor.
+ */
 export default defineConfig({
-  plugins: [react(), tailwindcss(), viteSingleFile()],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "src"),
-    },
+  // GitHub Pages alt yolu; custom domain'e geçince "/" yapın
+  base: "/dark-philosophical-prose-fragments/",
+  plugins: [react(), tailwindcss()],
+  resolve: { alias: { "@": path.resolve(dirname, "src") } },
+  server: {
+    host: true,
+    port: 5173,
+    // Arena canlı önizlemesi ve proxy'ler: {port}-{sandbox}.e2b.app gibi host'lar gelir
+    allowedHosts: [".e2b.app", ".ngrok-free.app", ".loca.lt"],
+  },
+  preview: {
+    host: true,
+    port: 4173,
+    allowedHosts: [".e2b.app", ".ngrok-free.app", ".loca.lt"],
+  },
+  build: {
+    // görseller asla satır içi olmasın: ayrı dosya → cache'lenebilir, ertelenebilir
+    assetsInlineLimit: 0,
+    cssCodeSplit: true,
+    reportCompressedSize: false,
   },
 });

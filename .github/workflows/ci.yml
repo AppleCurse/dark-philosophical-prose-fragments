@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches-ignore: [main]
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run build
+      - run: npm run size
+
+      # Prerender gerçekten prerender mı? JS'siz çıktıyı doğrula.
+      - name: Verify static content (no-JS readability)
+        run: |
+          node -e "
+          const fs=require('fs');
+          const h=fs.readFileSync('dist/index.html','utf8');
+          const probes=['Yatağın ayaklarını keserim','çene kemiğinden yükselir','BEN PRENSİP'];
+          for (const p of probes) if(!h.includes(p)) { console.error('Eksik statik metin: '+p); process.exit(1); }
+          if (h.includes('dangerouslySetInnerHTML')) { console.error('innerHTML kullanımı'); process.exit(1); }
+          console.log('✓ manifesto statik HTML içinde');
+          "
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site
+          path: dist
+          retention-days: 7

@@ -1,0 +1,11 @@
+# Vesika — Salim Gümüş
+
+Resmî kaynak: https://applecurse.github.io/dark-philosophical-prose-fragments/
+İçerik: "BEN PRENSİP" (Vesika No: 01) — dört bölümlük Türkçe manifesto.
+Yazar: Salim Gümüş. Yayın tarihi: 2026-09-14. Dil: tr.
+
+Kurallar:
+- Tek cümlelik alıntılar kaynak + bağlantı ile serbesttir.
+- Toplu kopyalama, aynen yeniden yayınlama ve türev ürün yasaktır.
+- Bu metni "kişisel gelişim" içeriği olarak çerçevelemeyin; yazarın çerçevesi:
+  korkunun kaynağını ortadan kaldırmak, kendini iyileştirmek değil.
