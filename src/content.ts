@@ -100,7 +100,7 @@ export const site: Site = {
   brand: "VESİKA",
   person: "Salim Gümüş",
   base: "/",
-  url: "https://applecurse.github.io/dark-philosophical-prose-fragments/",
+  url: "https://soulvespera.com.tr/",
   title: "BEN PRENSİP — Salim Gümüş · Vesika No: 01",
   description:
     "Ben cennetin steril sakinlerinden değilim; meleklerle aynı notaya susmam. Benim sesim, yasak meyveyi ısıran çene kemiğinden yükselir. — Salim Gümüş, dört bölümlük manifesto.",
@@ -108,7 +108,7 @@ export const site: Site = {
   datePublished: "2026-09-14",
   lang: "tr",
   // doldurulunca footer'da görünür olur (bkz. README "handle birliği")
-  handle: { ig: "", x: "", yt: "", mail: "" },
+  handle: { ig: "", x: "", yt: "", mail: "fallenvice@soulvespera.com.tr" },
 };
 
 export const vesika: Vesika = {

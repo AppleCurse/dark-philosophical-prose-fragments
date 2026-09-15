@@ -2,4 +2,4 @@ User-agent: *
 Allow: /
 
 # Alıntı botları için kaynak: içerik tek dosyada, statik HTML'de.
-Sitemap: https://applecurse.github.io/dark-philosophical-prose-fragments/sitemap.xml
+Sitemap: https://soulvespera.com.tr/sitemap.xml

@@ -20,7 +20,7 @@ import { pathToFileURL } from "node:url";
 const ROOT = path.resolve(import.meta.dirname, "..");
 const SSR_DIR = path.join(ROOT, "prerender");
 const DIST = path.join(ROOT, "dist");
-const BASE = "/dark-philosophical-prose-fragments/";
+const BASE = "/";
 
 const log = (...a) => console.log("·", ...a);
 

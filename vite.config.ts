@@ -13,8 +13,8 @@ const dirname = path.dirname(fileURLToPath(import.meta.url));
  * Statik prerender'ı `scripts/prerender.mjs` yapıyor.
  */
 export default defineConfig({
-  // GitHub Pages alt yolu; custom domain'e geçince "/" yapın
-  base: "/dark-philosophical-prose-fragments/",
+  // Custom domain için kök dizin
+  base: "/",
   plugins: [react(), tailwindcss()],
   resolve: { alias: { "@": path.resolve(dirname, "src") } },
   server: {
