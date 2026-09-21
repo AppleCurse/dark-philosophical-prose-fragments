@@ -153,7 +153,7 @@ export const vesika: Vesika = {
     {
       tag: "EK: 04",
       label: "MASUMİYET",
-      img: image("ek-masumiyet.webp", 420, 280, "Kanıt 04: ateşli kanatlarla düşüş — Salim Gümüş, Vesika 01"),
+      img: image("ek-masumiyet.webp", 420, 280, "Kanıt 04: düşüşten önce, bulut üzerinde sükûnet — Salim Gümüş, Vesika 01"),
     },
   ],
   chapters: [
@@ -169,7 +169,7 @@ export const vesika: Vesika = {
         { devil: "teklif etti.", me: "sistemi kurdum." },
       ],
       image: {
-        img: image("yeniden-insa.webp", 1100, 1045, "Duruş: yerden kalkıp yeniden yazan adam — Vesika 01, Bölüm I"),
+        img: image("yeniden-insa.webp", 1100, 1045, "Duruş: kollar bağlı, ay ışığında dimdik — Vesika 01, Bölüm I"),
         caption: "Duruş · Yeniden İnşa",
         quote: "“Yerden kalkıp yeniden yazdım.”",
       },
@@ -201,8 +201,8 @@ export const vesika: Vesika = {
         { t: "Korkunun kaynağını ortadan kaldırırım.", as: "strong" },
       ],
       image: {
-        img: image("yatak.webp", 1200, 675, "Ayakları kesilmiş demir yatak, sisli ormanda — Vesika 01, Bölüm II"),
-        caption: "Kanıt · Ayakları kesilmiş yatak",
+        img: image("yatak.webp", 1200, 675, "Bulut tahtında kurulmuş, ay ışığında dinleniyor — Vesika 01, Bölüm II"),
+        caption: "Kanıt · Bulut yatak",
         quote: "“Altı kalmayan yatağın korkusu da kalmaz.”",
       },
       strike: "İşte bu, Salim Gümüş olmak.",
@@ -213,7 +213,7 @@ export const vesika: Vesika = {
       id: "bolum-2b",
       num: "II · devam",
       title: "Toprak",
-      fullBleed: image("toprak.webp", 1600, 893, "Toprak yığınının üzerinde dik duran adam — Vesika 01, Bölüm II.b"),
+      fullBleed: image("toprak.webp", 1600, 893, "Fırtınanın üzerinde şehre hâkim; sırtı dönük, sakin — Vesika 01, Bölüm II.b"),
       lead: "Sizi çıkamayacağınız kadar derin bir mezara koyup üzerinize toprak atıyorlarsa sevinmelisiniz.",
       lines: [
         { t: "Çünkü o toprak ayağınızın altına girerse, sizi **yükseltecektir**.", as: "normal" },
@@ -238,7 +238,7 @@ export const vesika: Vesika = {
         { t: "O bana soru sormayı öğretti.", as: "strong" },
       ],
       image: {
-        img: image("kuzgun.webp", 1300, 866, "Kuzgun, yakın plan — Vesika 01, Bölüm III"),
+        img: image("kuzgun.webp", 1300, 866, "Omzunda kuzgun; duman omzundan dağılıyor — Vesika 01, Bölüm III"),
         caption: "Kanıt · Kuzgun",
         quote: "“O susuyordu.”",
       },
@@ -255,7 +255,7 @@ export const vesika: Vesika = {
         "sofra.webp",
         1600,
         900,
-        "Katedralin ortasındaki uzun masanın başında oturan adam — Vesika 01, Bölüm IV",
+        "Bulut tahtında, telefonuna eğilmiş; masa onun, oyun onun — Vesika 01, Bölüm IV",
       ),
       lines: [
         { t: "Kurallar onun için yazılmadı.", as: "normal" },
