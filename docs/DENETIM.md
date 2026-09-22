@@ -400,3 +400,69 @@ Elle kontrol listesi:
 - [ ] `Ctrl+P` → künyeli, fotoğrafsız, bölümleri ayrı sayfalarda belge; kazınan satır kâğıtta
 - [ ] Sistemde "hareketi azalt" aç → tüy yok, divit tam metin, mühür anında oturur
 - [ ] JS'i kapat → manifesto tam okunur (485 kelime), ada yuvaları sessizce kaybolur
+
+---
+
+## G. Mühür: çizmeden önce **çizdirerek** doğrulama
+
+Sandbox'ta tarayıcı yok, SVG rasterizer yok (`playwright` CDN'i TLS'te kesildi, `rsvg-convert`
+kurulu değil). Yani elle çizilmiş SVG'yi "gözle" kontrol etmenin yolu kapanmıştı. Kapatmadım:
+geometriyi **sayısal** olarak doğrulayıp silueti ImageMagick çizim ilkelleriyle birebir
+kodaki değerlerden rasterleştirdim (`translate/rotate/ellipse` — gerçek SVG'deki elemanlarla
+aynı koordinatlar). Üç turda üç gerçek kusur çıktı:
+
+| # | Kusur | Kanıt | Onarım |
+|---|---|---|---|
+| G1 | 8 damladan 2'si viewBox'ın dışına taşıyor (61,6 / 60) ve SVG'nin `overflow: hidden`'ı uçlarını **düz kesiyordu** | radyal erişim = `r + rx` hesabı | elle ayarlanmış damla seti, sınır `r + rx ≤ 58` |
+| G2 | Damlalar **güneş ışını / dişli** gibi duruyordu: radyal erişim (`rx`) teğetsel genişlikten (`ry`) büyüktü | raster önizleme | `ry > rx` → loblar kenara yapıştı, erimiş mum kenarı |
+| G3 | Damlalar gövdeden **ayrı renkte** iki ton üretiyor, siluet "çiçek" gibi okunuyordu | raster önizleme | gradyan `gradientUnits="userSpaceOnUse"` → tek ışık kaynağı, süreli mum kütlesi |
+
+Yan ürün: önizleme aracının kendisi de iki kez hata yaptı ve ikisi de kayda değer —
+ImageMagick'te `translate/rotate` **kümülatif** (tek `-draw` string'inde 8 damla üst üste
+bindi; gerçek SVG'de her `<ellipse>` kendi transform'una sahip olduğu için eser etkilenmedi)
+ve ilk kompozit zinciri sessizce boş çıktı üretti. Yani "doğrulama aracı" da doğrulanmalı.
+
+Son durum: 9 damla, en kötü radyal erişim **52,5 / 60**, hepsi yuvarlak, hiçbiri kırpık değil;
+iç halka inceltilip sönükleştirildi (parlakken "bozuk para" gibi duruyordu).
+
+## H. "Divit satırları yok" bildirimi — kök neden ve üç kalıcı onarım
+
+Bildirim: hero'daki divit satırları (`ink.raw` + `ink.principle`) görünmüyordu. Kod
+doğrulandı: `InkWriter` bileşeni, `main.tsx` haritası, `App.tsx` yuvası ve statik HTML'deki
+`data-island="InkWriter"` **hepsi yerinde ve değişmemiş** (`git diff bd16f52 HEAD` yalnızca
+yorum satırları). Yani metin silinmemişti; **görünmezdi**. Kök neden zinciri:
+
+1. `vite` günlüğünde tekrar tekrar:
+   `hmr invalidate /src/islands.tsx — Could not Fast Refresh ("armReveals" export is incompatible)`
+   → her düzenlemede **tam sayfa yeniden yükleme**. `islands.tsx` hem bileşen hem düz fonksiyon
+   dışa aktardığı için vite-plugin-react Fast Refresh'i reddediyordu. Geliştirme sekmesi bu
+   türbülansda yarı monte edilmiş bir durumda kalabiliyor.
+2. `useInView` yalnızca IntersectionObserver'a güveniyordu; IO ilk geri çağrısını geciktirirse
+   (sekme arka planda, ekran görüntüsü araçları, bazı webview'ler) üst katmandaki içerik
+   "yokmuş" gibi görünüyordu — divit tam olarak üst katmandaydı.
+
+Onarımlar:
+
+- **`src/motion.ts` (yeni):** `prefersReducedMotion` + `armReveals` taşındı. `islands.tsx`
+  artık yalnızca bileşen/hook/tip dışa aktarıyor → Fast Refresh çalışıyor → tam sayfa
+  yeniden yükleme türbülansı yok.
+- **`useInView` montaj anında dikdörtgen kontrolü:** eleman zaten görünür alandaysa IO'yu
+  hiç beklemiyor. IO gecikmesi/eksikliği artık içerik saklayamıyor.
+- **Sunucu temiz yeniden başlatıldı** (bayat modül grafı sıfırlandı).
+
+Not: `IŞIĞI AÇ / IŞIĞI KAPAT` bir **anahtardır ve etiket yapılabilir eylemi** söyler —
+ışık kapalıyken "IŞIĞI AÇ", açıkken "IŞIĞI KAPAT" yazar. Bu davranış bu turda değişmedi;
+yeni olan tek şey yanında artık el fenerinin de olması (§D1): ampul oda ışığı, fener senin elin.
+
+### Bu turdaki ek bulgu: yeniden üretilemeyen varlıklar
+
+`npm run optimize:assets` ve `npm run make:og` çalıştırıldığında commit'li binary'ler
+**farklı baytlarla** yeniden yazılıyordu:
+
+| Dosya | Neden | Kanıt | Onarım |
+|---|---|---|---|
+| `src/assets/grain.png` | `plasma:fractal` **deterministik değil** | iki çalışmada md5 farklı; `-seed 20260922` ile birebir aynı | `-seed` eklendi |
+| `public/apple-touch-icon.png` | `-strip` yoktu; commit'li sürüm eski hatattan | üretilen ≠ commit'li (aynı boyut, farklı md5) | `-strip` + `png:compression-level=9`; yeniden üretildi (**piksel farkı 0**, −306 B) |
+
+Önemi: README bu script'leri belgeliyor; deterministik olmayan çıktı, her çalıştırmada
+"gereksiz binary diff" ve ziyaretçiye gereksiz cache invalidation demek.

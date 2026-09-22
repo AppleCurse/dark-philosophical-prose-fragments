@@ -1,7 +1,8 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
-import { Carve, InkWriter, ScrollProgress, Seal, Tools, armReveals } from "./islands";
+import { Carve, InkWriter, ScrollProgress, Seal, Tools } from "./islands";
+import { armReveals } from "./motion";
 import { site, vesika } from "./content";
 import { isIslandName, type IslandName } from "./islands-registry";
 import "./index.css";

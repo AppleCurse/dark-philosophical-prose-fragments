@@ -75,6 +75,11 @@ for (const { file, out, w, q, mode } of ITEMS) {
 const grain = path.join(GR_OUT, "grain.png");
 try {
   execFileSync("convert", [
+    // plasma:fractal deterministik DEGIL: her çalışmada başka bayt üretir ve
+    // commit'li grain.png'i "değişmiş" gösterir (negatif testte kanıtlandı:
+    // iki çalışmada md5 farklı, -seed ile birebir aynı). Sabit tohum = yeniden
+    // üretilebilir varlık.
+    "-seed", "20260922",
     "-size", "256x256", "plasma:fractal", "-colorspace", "Gray",
     "-level", "30%,70%,70%", "-blur", "0x0.4",
     "-alpha", "set", "-channel", "Alpha", "-evaluate", "Multiply", "0.14", "+channel",

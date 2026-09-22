@@ -18,23 +18,16 @@
  * numarası cihazından çıkmaz, sunucuya istek gitmez, çerez yoktur.
  */
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { prefersReducedMotion } from "./motion";
 
 /* ───────────────────────── helpers ───────────────────────── */
 
-export function prefersReducedMotion() {
-  return (
-    typeof window !== "undefined" &&
-    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches === true
-  );
-}
-
-/** Kaydırma-animasyonlarının kilidini açar (CSS: html.js-io). Yalnızca JS varken. */
-export function armReveals() {
-  if (typeof document === "undefined") return;
-  document.documentElement.classList.add("js-io");
-}
-
-/** Görünüme girince true olur; IO yoksa anında true (asla görünmez kalmaz). */
+/** Görünüme girince true olur; IO yoksa anında true (asla görünmez kalmaz).
+ *  Ek güvence: montaj anında bir kez dikdörtgen kontrolü. IntersectionObserver
+ *  ilk geri çağrısını geciktirebiliyor (sekme arka planda, ekran görüntüsü
+ *  araçları, bazı webview'ler) ve o sırada üst katmandaki içerik "yokmuş" gibi
+ *  görünüyor — divit satırlarının başına gelen tam olarak buydu. Eleman zaten
+ *  görünür alandaysa IO'yu hiç beklemiyoruz. */
 export function useInView(threshold = 0.3) {
   const ref = useRef<HTMLElement | null>(null);
   const [inView, setInView] = useState(false);
@@ -42,6 +35,12 @@ export function useInView(threshold = 0.3) {
     const el = ref.current;
     if (!el) return;
     if (!("IntersectionObserver" in window)) {
+      setInView(true);
+      return;
+    }
+    const r0 = el.getBoundingClientRect();
+    const vh = window.innerHeight || document.documentElement.clientHeight;
+    if (r0.top < vh && r0.bottom > 0) {
       setInView(true);
       return;
     }
@@ -319,23 +318,39 @@ export function readNusha(): Nusha | null {
   return readStore<Nusha>(SEAL_KEY, asNusha);
 }
 
-/** Mum damlaları: deterministik, organik görünümlü kenar. */
-const DRIPS = [4, 47, 96, 148, 197, 243, 292, 331].map((deg, i) => {
-  const rad = (deg * Math.PI) / 180;
-  const r = 43 + (i % 3) * 2.6;
+/** Mum damlaları: deterministik, elle ayarlanmış kenar.
+ *
+ *  İlk sürüm formülseldi (`i % 3` / `i % 4`) ve iki hatası vardı:
+ *   1) iki damla viewBox'ın dışına taşıyor, `overflow: hidden` uçlarını düz kesiyordu;
+ *   2) radyal erişim (`rx`) teğetsel genişlikten (`ry`) BÜYÜKTÜ — damlalar erimiş mum
+ *      kenarı gibi değil, güneş ışını / dişli gibi duruyordu.
+ *
+ *  Şimdi her damla elle çizilmiş: `r` merkezin yarıçapı, `rx` dışa erişim, `ry` kenar
+ *  boyunca genişlik. `ry > rx` lobları kenara yapıştırır; erişim farkı `(r+rx)-45`
+ *  3,5–7,5 arası kalır (azı görünmez, çoğu karikatür). Sınır: `r + rx ≤ 58`
+ *  (viewBox 120, merkez 60,60) — raster önizlemeyle doğrulandı (docs/DENETIM.md §G).
+ */
+const DRIPS = [
+  { deg: 8, r: 44.5, rx: 6.5, ry: 10.5 },
+  { deg: 49, r: 43.0, rx: 9.5, ry: 8.0 },
+  { deg: 97, r: 45.0, rx: 5.5, ry: 12.0 },
+  { deg: 138, r: 42.5, rx: 8.0, ry: 9.5 },
+  { deg: 176, r: 44.0, rx: 4.5, ry: 7.0 },
+  { deg: 214, r: 43.5, rx: 9.0, ry: 11.0 },
+  { deg: 259, r: 44.5, rx: 5.0, ry: 8.5 },
+  { deg: 306, r: 42.8, rx: 7.5, ry: 10.0 },
+  { deg: 337, r: 44.2, rx: 4.0, ry: 6.5 },
+].map((d) => {
+  const rad = (d.deg * Math.PI) / 180;
   return {
-    cx: 60 + Math.cos(rad) * r,
-    cy: 60 + Math.sin(rad) * r,
-    rot: deg,
-    rx: 9 + (i % 4) * 2.2,
-    ry: 5.4 + (i % 3) * 1.3,
-    key: deg,
+    ...d,
+    cx: 60 + Math.cos(rad) * d.r,
+    cy: 60 + Math.sin(rad) * d.r,
   };
 });
 
 function WaxSeal({ sealed, pressing, no }: { sealed: boolean; pressing: boolean; no: string }) {
   const body = sealed ? "url(#waxLit)" : "url(#waxCold)";
-  const drip = sealed ? "#8d1c12" : "#2a1412";
   return (
     <svg
       viewBox="0 0 120 120"
@@ -346,13 +361,16 @@ function WaxSeal({ sealed, pressing, no }: { sealed: boolean; pressing: boolean;
       focusable="false"
     >
       <defs>
-        <radialGradient id="waxLit" cx="36%" cy="30%" r="74%">
+        {/* userSpaceOnUse ŞART: objectBoundingBox'da her eleman kendi gradyanını
+            alıyor, damlalar gövdeden ayrı renkte "çiçek yaprağı" gibi duruyordu.
+            Tek gradyan alanı = tek ışık kaynağı = süreli bir mum kütlesi. */}
+        <radialGradient id="waxLit" gradientUnits="userSpaceOnUse" cx="43" cy="36" r="68">
           <stop offset="0%" stopColor="#d9573c" />
           <stop offset="38%" stopColor="#9c1f14" />
           <stop offset="78%" stopColor="#6d1009" />
           <stop offset="100%" stopColor="#3d0705" />
         </radialGradient>
-        <radialGradient id="waxCold" cx="36%" cy="30%" r="74%">
+        <radialGradient id="waxCold" gradientUnits="userSpaceOnUse" cx="43" cy="36" r="68">
           <stop offset="0%" stopColor="#4d2b26" />
           <stop offset="52%" stopColor="#2d1614" />
           <stop offset="100%" stopColor="#150a09" />
@@ -361,20 +379,22 @@ function WaxSeal({ sealed, pressing, no }: { sealed: boolean; pressing: boolean;
 
       {DRIPS.map((d) => (
         <ellipse
-          key={d.key}
+          key={d.deg}
           cx={d.cx}
           cy={d.cy}
           rx={d.rx}
           ry={d.ry}
-          fill={drip}
-          transform={`rotate(${d.rot} ${d.cx} ${d.cy})`}
+          fill={body}
+          transform={`rotate(${d.deg} ${d.cx} ${d.cy})`}
         />
       ))}
 
       <circle cx="60" cy="60" r="45" fill={body} />
-      {/* çember içi kabartma: koyu üst kenar + ince açık alt kenar */}
-      <circle cx="60" cy="60" r="35" fill="none" stroke="rgba(0,0,0,0.5)" strokeWidth="2.4" />
-      <circle cx="60" cy="60" r="33.4" fill="none" stroke="rgba(255,214,196,0.16)" strokeWidth="1.1" />
+      {/* çember içi kabartma: tek koyu oyuk + çok ince açık kenar.
+          İkinci halka parlakken mühür "bozuk para" gibi duruyordu; inceltilip
+          sönükleştirildi — baskı izi, madalyon değil. */}
+      <circle cx="60" cy="60" r="34.4" fill="none" stroke="rgba(0,0,0,0.42)" strokeWidth="1.9" />
+      <circle cx="60" cy="60" r="33.1" fill="none" stroke="rgba(255,214,196,0.10)" strokeWidth="0.9" />
 
       {/* kazınmış monogram: açık alt gölge, koyu üst oyuk */}
       <g className="wax-glyph">
