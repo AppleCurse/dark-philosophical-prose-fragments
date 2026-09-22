@@ -1,8 +1,9 @@
 @import "tailwindcss";
 
 @theme {
-  /* Kendi barındırılan, alt kümeleştirilmiş fontlar — bkz. src/fonts/fonts.css
-     ("Cinzel TR" yalnızca İ (U+0130) için devreye girer; Cinzel'de bu glif yok.) */
+  /* Kendi barındırılan, alt kümeleştirilmiş fontlar — tanım: src/fonts.css,
+     dosyalar: src/assets/fonts/ (üretim: scripts/subset-fonts.py).
+     "Cinzel TR" yalnızca İ (U+0130) için devreye girer; Cinzel'de bu glif yok. */
   --font-serif: "Cormorant Garamond Variable", "Cormorant Garamond", Georgia, serif;
   --font-display: "Cinzel Variable", "Cinzel TR", "Cinzel", Georgia, serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
@@ -10,11 +11,13 @@
 
   --color-ink: #060606;
   --color-ash: #101010;
-  --color-smoke: #1a1a1a;
   --color-bone: #ece9e2;
   --color-silver: #b9b9b9;
   --color-silver-dim: #6f6f6f;
+  /* mühür mumu — sitede tek bir kırmızı ailesi var, o da mumda kullanılır */
   --color-blood: #7a0c0c;
+  --color-wax: #9c1f14;
+  --color-wax-lit: #cf4a33;
 }
 
 html {
@@ -136,20 +139,6 @@ body::after {
 }
 
 /* ---------- hero girişi ---------- */
-@keyframes heroIn {
-  from {
-    opacity: 0;
-    transform: scale(1.06);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-.hero-img {
-  animation: heroIn 2.4s cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
 @keyframes heroText {
   from {
     opacity: 0;
@@ -202,15 +191,8 @@ body::after {
   }
 }
 
-@keyframes heroInFallback {
-  to {
-    opacity: 1;
-  }
-}
-
 /* ---------- "IŞIĞI AÇ": kazınmış duvar yazısını okunur kılar ---------- */
-.carved-wall-text,
-.carved-wall-italic {
+.carved-wall-text {
   transition: color 0.5s ease, text-shadow 0.5s ease;
 }
 html[data-light] .carved-wall-text {
@@ -375,6 +357,225 @@ html[data-light] body::after {
   }
 }
 
+/* ---------- tek ampul: işaretçiyi izleyen duvar feneri ----------
+ * Vesikanın yeri zaten "kaba sıva, tek ampul". Ampul artık ziyaretçinin elinde:
+ * işaretçi duvarın üzerinde gezindikçe sıcak bir ışık düşer ve kazınmış satırlar
+ * gerçek bir yazıt gibi (yanal ışıkta) okunur hâle gelir.
+ *
+ * Performans notu: gradient'in konumu DEĞİL, katmanın `transform`'u değişir.
+ * `will-change: transform` ile ayrı kompozit katman → kare başına paint yok.
+ * Yalnızca ince işaretçide bağlanır (src/main.tsx → armWallTorch); dokunmatikte
+ * hiç oluşmaz, reduced-motion'da sabit ve sönük bir kor kalır. */
+.wall-torch {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 20;
+  width: 520px;
+  height: 520px;
+  margin: -260px 0 0 -260px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.7s ease;
+  background:
+    radial-gradient(closest-side, rgba(255, 232, 194, 0.22), rgba(255, 206, 148, 0.09) 46%, transparent 72%);
+  mix-blend-mode: screen;
+  transform: translate3d(var(--tx, 50%), var(--ty, 22%), 0);
+  will-change: transform;
+}
+[data-torch-on] .wall-torch {
+  opacity: 1;
+}
+.torch-hint {
+  display: none;
+}
+@media (hover: hover) and (pointer: fine) {
+  .torch-hint {
+    display: block;
+    opacity: 0.55;
+    transition: opacity 0.6s ease;
+  }
+  [data-torch][data-torch-on] .torch-hint {
+    opacity: 0;
+  }
+}
+/* ---------- havada kalan tüy ----------
+ * Kapak karesinde zaten havada tüyler var; biri fotoğraftan sayfaya düşmeye
+ * devam eder. Tek katman, yalnızca transform+opacity → paint maliyeti yok.
+ * %85'i görünmez: sürpriz gibi gelir, dikkat çalmaz. */
+.falling-feather {
+  position: absolute;
+  top: -6%;
+  left: 18%;
+  z-index: 15;
+  width: 26px;
+  height: 26px;
+  pointer-events: none;
+  opacity: 0;
+  color: #ece9e2;
+  animation: featherFall 34s linear infinite;
+  animation-delay: 6s;
+}
+@keyframes featherFall {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) rotate(-14deg);
+  }
+  4% {
+    opacity: 0.2;
+  }
+  18% {
+    transform: translate3d(9vw, 34vh, 0) rotate(58deg);
+  }
+  32% {
+    opacity: 0.16;
+    transform: translate3d(-4vw, 62vh, 0) rotate(142deg);
+  }
+  46% {
+    transform: translate3d(11vw, 92vh, 0) rotate(214deg);
+  }
+  52%,
+  100% {
+    opacity: 0;
+    transform: translate3d(4vw, 112vh, 0) rotate(250deg);
+  }
+}
+
+/* ---------- kazınmış satır (okunur yazıt) ----------
+ * `.carved-wall-text` bilinçli olarak ~1:1 kontrastta (docs/AUDIT.md §2.6/4):
+ * o satırlar ampulle okunur. Okuyucunun KENDİ satırı için aynı oyunu oynamıyoruz —
+ * burada yazıt lambanın altında, yüksek kontrastta kazınmış görünür. */
+.carved-lit {
+  color: #ded9cd;
+  text-shadow:
+    0 -1px 1px rgba(0, 0, 0, 0.95),
+    0 1px 0.5px rgba(236, 233, 226, 0.2),
+    0 0 22px rgba(0, 0, 0, 0.6);
+}
+
+/* ---------- kazı paneli: duvardan bir parça ---------- */
+.carve-panel {
+  position: relative;
+  border: 1px solid rgba(236, 233, 226, 0.07);
+  box-shadow:
+    inset 0 0 120px rgba(0, 0, 0, 0.9),
+    0 30px 60px -30px rgba(0, 0, 0, 0.9);
+}
+/* üstteki tek ampulün panel üzerindeki sıcak lekesi */
+.carve-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 60% 42% at 50% 0%, rgba(255, 214, 160, 0.11), transparent 70%);
+}
+/* ::before konumlu oldugu icin statik akistaki metnin ustune boyanir; cocuklari
+   konumlu yap ki lamba lekesi yuzeyde kalsin, yaziya degmesin. */
+.carve-panel > * {
+  position: relative;
+}
+
+/* yeni kazınan satır: toz dağılır, oyuk keskinleşir */
+.carve-line {
+  animation: carveSettle 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation-delay: calc(var(--i, 0) * 90ms);
+}
+@keyframes carveSettle {
+  from {
+    opacity: 0;
+    filter: blur(3px);
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: none;
+  }
+}
+
+/* ---------- mühür: mum ---------- */
+.seal-btn {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+}
+.seal-btn:disabled {
+  cursor: default;
+}
+.wax-seal {
+  display: block;
+  filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.85));
+  transition:
+    filter 0.6s ease,
+    scale 0.5s cubic-bezier(0.2, 0.8, 0.2, 1),
+    rotate 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  rotate: -7deg;
+}
+@media (hover: hover) {
+  .seal-btn:not(:disabled):hover .wax-seal {
+    scale: 1.05;
+    rotate: 0deg;
+  }
+}
+.seal-btn:focus-visible .wax-seal {
+  outline: 1px solid #ece9e2;
+  outline-offset: 8px;
+  border-radius: 50%;
+}
+.wax-seal.is-sealed {
+  rotate: 0deg;
+  filter:
+    drop-shadow(0 14px 24px rgba(0, 0, 0, 0.9))
+    drop-shadow(0 0 26px rgba(156, 31, 20, 0.4));
+}
+@keyframes sealPress {
+  0% {
+    scale: 1;
+    rotate: -7deg;
+  }
+  38% {
+    scale: 0.84;
+    rotate: 0deg;
+  }
+  64% {
+    scale: 1.07;
+    rotate: 1.5deg;
+  }
+  100% {
+    scale: 1;
+    rotate: 0deg;
+  }
+}
+.wax-seal.is-pressing {
+  animation: sealPress 0.62s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+/* monogram mumun içine basılır: açık alt kenar + koyu oyuk */
+.wax-glyph text {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.wax-glyph .wax-lo {
+  fill: rgba(255, 208, 190, 0.22);
+}
+.wax-glyph .wax-hi {
+  fill: rgba(0, 0, 0, 0.62);
+}
+.wax-glyph .wax-sm {
+  font-size: 15px;
+  letter-spacing: 0.16em;
+}
+
+/* ---------- kopyalama geri bildirimi (adasız, src/main.tsx) ---------- */
+.copy-quote.is-done {
+  color: #ece9e2;
+}
+.copy-quote.is-failed {
+  color: #cf4a33;
+}
+
 /* ---------- hareket hassasiyeti: içerik asla animasyona bağlı kalmasın ---------- */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -386,8 +587,7 @@ html[data-light] body::after {
     scroll-behavior: auto !important;
   }
   .reveal,
-  .hero-text,
-  .hero-img {
+  .hero-text {
     opacity: 1 !important;
     animation: none !important;
   }
@@ -404,5 +604,160 @@ html[data-light] body::after {
   }
   [data-island]:empty {
     display: none;
+  }
+}
+
+/* ---------- kâğıt nüsha: yalnızca yazdırırken var olan katman ----------
+ * Bir "vesika" eninde sonunda kâğıda geçer. Ctrl+P (ya da footer'daki ⎙) bu siteyi
+ * mürekkep dostu, tek renkli bir belgeye çevirir: fotoğraf ve doku yok, kazınmış
+ * satırlar okunur siyaha döner, her bölüm kendi sayfasına düşer, künye en üste basılır.
+ * Ziyaretçi duvara kendi satırını kazıdıysa o da kâğıda geçer — nüsha kişiselleşir. */
+.print-masthead,
+.print-only {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 18mm 16mm;
+  }
+
+  html {
+    overflow: visible !important;
+    background: #fff !important;
+  }
+  body {
+    min-height: 0 !important;
+    background: #fff !important;
+    font-size: 11pt;
+    line-height: 1.6;
+  }
+
+  /* tüm yüzey renkleri kâğıda göre tek tona iner */
+  *,
+  *::before,
+  *::after {
+    color: #111 !important;
+    background: transparent !important;
+    background-image: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    -webkit-text-fill-color: #111 !important;
+    border-color: #999 !important;
+  }
+
+  /* dekor, doku, fotoğraf ve ekran arayüzü kâğıtta yok */
+  body::after,
+  img,
+  svg,
+  .frame,
+  .overlay,
+  .wall-torch,
+  .falling-feather,
+  .sticky-plate,
+  .vertical-text,
+  .no-print,
+  .seal-readout:not(.is-on),
+  [data-island="ScrollProgress"],
+  [data-island="Tools"] {
+    display: none !important;
+  }
+
+  /* animasyona bağlı görünürlük kâğıtta asla içerik saklamasın */
+  .reveal,
+  .hero-text,
+  .carve-line,
+  .pulse-slow {
+    opacity: 1 !important;
+    animation: none !important;
+    filter: none !important;
+    transform: none !important;
+  }
+
+  /* ekran yükseklikleri ve geniş boşluklar sayfa düzenini bozmasın */
+  header,
+  main,
+  section,
+  footer,
+  .bleed-stage {
+    min-height: 0 !important;
+    height: auto !important;
+  }
+  header,
+  section,
+  footer {
+    padding: 0 0 8mm !important;
+  }
+  .carve-panel {
+    border: 1px solid #999 !important;
+    padding: 6mm !important;
+  }
+
+  /* künye: basılı belgenin kimliği */
+  .print-masthead {
+    display: block !important;
+    margin-bottom: 8mm;
+    text-align: center;
+  }
+  .print-masthead-title {
+    font-family: var(--font-display);
+    font-size: 15pt;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+  }
+  .print-masthead-meta {
+    margin-top: 2mm;
+    font-family: var(--font-mono);
+    font-size: 7.5pt;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+  }
+  .print-masthead-rule {
+    height: 1px;
+    margin: 5mm auto 0;
+    width: 40mm;
+    background: #111 !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+
+  /* belge ritmi: her bölüm yeni sayfada, satır ortasında kopma yok */
+  section {
+    break-before: page;
+    page-break-before: always;
+  }
+  main > section:first-of-type {
+    break-before: auto;
+    page-break-before: auto;
+  }
+  h2,
+  h3,
+  .section-mark {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+  .duel-row,
+  .carve-line,
+  p,
+  li {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .duel-divider {
+    background: #999 !important;
+  }
+
+  a {
+    text-decoration: none !important;
+  }
+  /* bağlantı adresi kâğıtta kaybolmasın */
+  footer a[href^="http"]::after {
+    content: " (" attr(href) ")";
+    font-family: var(--font-mono);
+    font-size: 7pt;
+    letter-spacing: 0;
   }
 }
