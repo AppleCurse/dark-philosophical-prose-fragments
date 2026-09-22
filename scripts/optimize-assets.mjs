@@ -32,7 +32,15 @@ const ITEMS = [
   ["soil.jpg", "toprak.webp", 1600, 74, null],
   ["table.jpg", "sofra.webp", 1600, 74, null],
   ["salim_dark_raven.jpg", "kuzgun.webp", 1300, 78, null],
-].map(([file, out, w, q, mode]) => ({ file: path.join(SRC, file), out, w, q, mode }));
+].map(([file, out, w, q, mode, frame]) => ({ file: path.join(SRC, file), out, w, q, mode, frame }));
+
+/**
+ * mode söz dizimi: "W:H[@gravity]"  →  "16:9", "3:4@north", "1:1@center"
+ *   gravity yoksa "north": yüz kadrajlarında baş yukarıda kalır.
+ * frame: hareketli kaynaklar (GIF) için kare indeksi ya da aralığı.
+ *   0  → ilk kare (donmuş an) · "0-27" → aralık (hareketli webp için).
+ *   Yoksa kaynak olduğu gibi okunur (JPG/WebP).
+ */
 
 function has(name) {
   try {
@@ -56,12 +64,15 @@ for (const { file, out, w, q, mode } of ITEMS) {
     console.warn(`⚠ kaynak yok: ${file} (atlandı)`);
     continue;
   }
-  const args = [file];
+  // GIF karesi / aralığı: yolun kendisine köşeli parantezle eklenir (IM söz dizimi)
+  const src = frame === undefined ? file : `${file}[${frame}]`;
+  const args = [src];
   if (mode) {
-    const [rw, rh] = mode.split(":").map(Number);
+    const [ratio, gravity = "north"] = mode.split("@");
+    const [rw, rh] = ratio.split(":").map(Number);
     const h = Math.round((w * rh) / rw);
-    // önce hedefi doldur, sonra yukarıdan kırp (yüz kadrajda kalır)
-    args.push("-resize", `${w}x${h}^`, "-gravity", "north", "-extent", `${w}x${h}`);
+    // önce hedefi doldur, sonra gravity yönünden kırp — kadraj BİLİNÇLİ, object-cover'a bırakılmaz
+    args.push("-resize", `${w}x${h}^`, "-gravity", gravity, "-extent", `${w}x${h}`);
   } else {
     args.push("-resize", `${w}x`);
   }
