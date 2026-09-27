@@ -13,7 +13,7 @@ import "./index.css";
 // alt kümeleştirilmiş, kendi barındırılan fontlar (scripts/subset-fonts.py üretir)
 import "./fonts.css";
 import { Fragment, type ReactNode } from "react";
-import { site, vesika, type ImageRef, type Line } from "./content";
+import { site, vesika, type ImageRef, type Line, type VideoRef } from "./content";
 
 /* ---------- görsel köprüsü: content.ts yolu → Vite'ın hash'lenmiş URL'i ---------- */
 
@@ -236,6 +236,47 @@ function Plate({
   );
 }
 
+/** Canlı video kaydı (küçük brutalist monitör). */
+function VideoPlate({
+  video,
+  className = "",
+  ratio = "aspect-square sm:aspect-[4/3]",
+}: {
+  video: VideoRef;
+  className?: string;
+  ratio?: string;
+}) {
+  return (
+    <div className={`group relative mx-auto overflow-hidden rounded-[2px] border border-white/15 bg-[#0a0a0a] p-2 shadow-2xl transition-all duration-500 hover:border-white/35 ${className}`.trim()}>
+      <div className={`relative ${ratio} overflow-hidden bg-black rounded-[1px]`}>
+        <video
+          src={video.src}
+          poster={video.poster}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          className="h-full w-full object-cover object-center"
+        />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30" aria-hidden="true" />
+        <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 rounded-full border border-white/20 bg-black/70 px-2.5 py-0.5 backdrop-blur-sm">
+          <span className="h-1.5 w-1.5 rounded-full bg-red-600 animate-pulse" aria-hidden="true" />
+          <span className="font-mono text-[0.48rem] uppercase tracking-[0.2em] text-white/90">KAYIT · {video.tag}</span>
+        </div>
+        <div className="absolute bottom-2.5 left-3 right-3 flex items-end justify-between gap-2">
+          <span className="font-mono text-[0.5rem] uppercase tracking-[0.2em] text-silver-dim">{video.title}</span>
+          <span className="font-serif text-xs italic text-bone">{video.caption}</span>
+        </div>
+      </div>
+      <div className="mt-1.5 flex items-center justify-between px-1 font-mono text-[0.44rem] uppercase tracking-[0.2em] text-silver-dim/60">
+        <span>HAREKETLİ KANIT</span>
+        <span className="text-bone/40">10.24s // DÖNGÜ</span>
+      </div>
+    </div>
+  );
+}
+
 /* ---------- satır tipografisi ---------- */
 
 function lineClass(role: Line["as"]) {
@@ -445,7 +486,18 @@ export default function App() {
 
           <IslandSlot name="InkWriter" />
 
-          <nav aria-label="Bölümler" className="mt-10 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 sm:mt-12">
+          {/* Üç Hal Barı: ARINMIŞ · KİRLENMİŞ · YANMIŞ */}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3 rounded-full border border-white/10 bg-black/40 px-5 py-2 backdrop-blur-md sm:gap-6">
+            {vesika.states.map((st, i) => (
+              <div key={st.label} className="flex items-center gap-2 font-mono text-[0.55rem] uppercase tracking-[0.25em]">
+                {i > 0 && <span className="text-silver-dim/30 mr-1 sm:mr-3" aria-hidden="true">·</span>}
+                <span className={st.tone}>{st.label}</span>
+                <span className="font-serif italic lowercase tracking-normal text-silver-dim/70">({st.sub})</span>
+              </div>
+            ))}
+          </div>
+
+          <nav aria-label="Bölümler" className="mt-8 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 sm:mt-10">
             {vesika.chapters.map((c) => (
               <a
                 key={c.id}
@@ -485,15 +537,9 @@ export default function App() {
                 ))}
               </div>
 
-              {c1.image && (
-                <figure className="mx-auto mt-12 max-w-xl rounded-[2px] border border-white/10 bg-[#0c0c0c] p-2.5 shadow-2xl sm:p-3">
-                  <Plate
-                    image={c1.image.img}
-                    ratio="aspect-[16/11]"
-                    caption={c1.image.caption}
-                    quote={c1.image.quote}
-                    tint="from-black/80 via-transparent to-transparent"
-                  />
+              {c1.video && (
+                <figure className="mx-auto mt-14 max-w-sm">
+                  <VideoPlate video={c1.video} ratio="aspect-square" />
                 </figure>
               )}
             </Reveal>
@@ -590,6 +636,13 @@ export default function App() {
 
           <div className="mx-auto max-w-3xl px-6 py-24 md:py-32">
             {c2b.lines && <ChapterLines lines={c2b.lines} />}
+            {c2b.video && (
+              <Reveal>
+                <div className="mx-auto my-14 max-w-md">
+                  <VideoPlate video={c2b.video} ratio="aspect-[3/2]" />
+                </div>
+              </Reveal>
+            )}
             <Reveal>
               <div className="mt-20 text-right">
                 <h3 className="silver-text text-3xl leading-tight tracking-[0.08em] md:text-5xl">{c2b.strike}</h3>

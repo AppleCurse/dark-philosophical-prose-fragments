@@ -45,6 +45,14 @@ export type LineRole =
 /** t: metin · as: tipografik rol */
 export type Line = { t: string; as?: LineRole };
 
+export type VideoRef = {
+  src: string;
+  poster: string;
+  tag: string;
+  title: string;
+  caption: string;
+};
+
 export type Chapter = {
   id: string;
   num: string;
@@ -60,6 +68,7 @@ export type Chapter = {
   /** dev, gümüş gradyanlı satır */
   big?: string;
   image?: { img: ImageRef; caption: string; quote: string };
+  video?: VideoRef;
   fullBleed?: ImageRef;
   /** Bölüm IV'ün iki sütunlu "kime ne" bloğu */
   split?: { for: string; then: string }[];
@@ -71,6 +80,13 @@ export type Chapter = {
   copy?: string;
 };
 
+export type ManifestState = {
+  label: string;
+  sub: string;
+  tag: string;
+  tone: string;
+};
+
 export type Vesika = {
   no: string;
   slug: string;
@@ -80,6 +96,7 @@ export type Vesika = {
   carving: { left: string[]; right: string[]; caption: string };
   portrait: ImageRef;
   codaImage: ImageRef;
+  states: ManifestState[];
   /** divit ile yazılan imza satırları */
   ink: { raw: [string, string]; clean: [string, string]; principle: string };
   /** kanıt klasörü: dört ek */
@@ -127,7 +144,12 @@ export const vesika: Vesika = {
     1500,
     `${"Salim Gümüş"} — tahtta, koyu kızıl kadife kaftanı ve kırmızı kanatlarıyla. Vesika 01 kapak karesi`,
   ),
-  codaImage: image("hero-bg.webp", 1400, 932, ""),
+  codaImage: image("kirmizi-kivilcim.webp", 1400, 932, "Kıvılcımlar ve kızıl kanatlar — Salim Gümüş"),
+  states: [
+    { label: "BEYAZ", sub: "ARINMIŞ", tag: "Cennet & Sükûnet", tone: "text-white" },
+    { label: "SİYAH", sub: "KİRLENMİŞ", tag: "Düşüş & Şüphe", tone: "text-silver" },
+    { label: "KIRMIZI", sub: "YANMIŞ", tag: "Prensip & Ateş", tone: "text-red-400" },
+  ],
   ink: {
     raw: ["“Sikemeyeceğiniz kadar tecrübeli,", "sikemeyecek kadar yorgun.”"],
     /** reklam / önizleme / işbirliği hattında kullanılan temiz eşdeğer (docs/AUDIT.md §3.3) */
@@ -168,10 +190,12 @@ export const vesika: Vesika = {
         { devil: "yemin etti.", me: "imzaladım." },
         { devil: "teklif etti.", me: "sistemi kurdum." },
       ],
-      image: {
-        img: image("yeniden-insa.webp", 1100, 733, "Duruş: katedralde iki yana açılmış kırmızı kanatlar — Salim Gümüş, Vesika 01, Bölüm I"),
-        caption: "Duruş · Yeniden İnşa",
-        quote: "“Yerden kalkıp yeniden yazdım.”",
+      video: {
+        src: "./videos/video-arinma.mp4",
+        poster: "./videos/video-arinma-poster.webp",
+        tag: "01",
+        title: "BEYAZ ARINMIŞ · STERİL CENNET",
+        caption: "“Melek gibi davrandığım için kusura bakmayın.”",
       },
       strike: "Şeytan hata yaptı.",
       big: "BEN PRENSİP.",
@@ -201,9 +225,9 @@ export const vesika: Vesika = {
         { t: "Korkunun kaynağını ortadan kaldırırım.", as: "strong" },
       ],
       image: {
-        img: image("yatak.webp", 1200, 799, "Karanlık kıvılcımlar ve kırmızı kanatlar — Salim Gümüş, Vesika 01, Bölüm II"),
-        caption: "Kanıt · Korkunun Kaynağı",
-        quote: "“Altı kalmayan yatağın korkusu da kalmaz.”",
+        img: image("siyah-on.webp", 1400, 933, "Siyah devasa kanatlarıyla karanlığı kontrol eden dik duruş — Salim Gümüş, Vesika 01, Bölüm II"),
+        caption: "Hal: Siyah Kirlenmiş · Korkunun Kaynağı",
+        quote: "“Korkunun kaynağını ortadan kaldırırım.”",
       },
       strike: "İşte bu, Salim Gümüş olmak.",
       copy: "Yatağın ayaklarını keserim; altı kalmayan yatağın korkusu da kalmaz.",
@@ -213,7 +237,14 @@ export const vesika: Vesika = {
       id: "bolum-2b",
       num: "II · devam",
       title: "Toprak",
-      fullBleed: image("toprak.webp", 1600, 1066, "Karanlık dumanlar ve alev kıvılcımları arasında dik duruş — Salim Gümüş, Vesika 01, Bölüm II.b"),
+      fullBleed: image("siyah-dikey.webp", 900, 857, "Karanlık kanatların gölgesinde topraktan yükseliş — Salim Gümüş, Vesika 01, Bölüm II.b"),
+      video: {
+        src: "./videos/video-cakilis.mp4",
+        poster: "./videos/video-cakilis-poster.webp",
+        tag: "02",
+        title: "ÇAKILIŞ · FIRTINA VE DÜŞÜŞ",
+        caption: "“Ayağa kalkıp dik durursanız sizi yükseltir.”",
+      },
       lead: "Sizi çıkamayacağınız kadar derin bir mezara koyup üzerinize toprak atıyorlarsa sevinmelisiniz.",
       lines: [
         { t: "Çünkü o toprak ayağınızın altına girerse, sizi **yükseltecektir**.", as: "normal" },
@@ -238,8 +269,8 @@ export const vesika: Vesika = {
         { t: "O bana soru sormayı öğretti.", as: "strong" },
       ],
       image: {
-        img: image("kuzgun.webp", 1300, 866, "Sert ve kararlı bakış, kırmızı kanatlar — Salim Gümüş, Vesika 01, Bölüm III"),
-        caption: "Kanıt · Sessizlik",
+        img: image("siyah-profil.webp", 1400, 933, "Karanlıkta suskun ve sorgulayan profil silüeti, siyah kanatlar — Salim Gümüş, Vesika 01, Bölüm III"),
+        caption: "Hal: Siyah Kirlenmiş · Şüphe & Sessizlik",
         quote: "“O susuyordu.”",
       },
       copy: "Şeytan konuşmaz; sana sormayı öğretir. Ben okunan metinleri değil, okuyan insanı seçerim.",
@@ -252,10 +283,10 @@ export const vesika: Vesika = {
       big: "Cehenneme düşmez.",
       strike: "ORAYA YATIRIM YAPAR.",
       fullBleed: image(
-        "sofra.webp",
-        1600,
-        1066,
-        "Görkemli katedral salonunda devasa kırmızı kanatlar — Salim Gümüş, Vesika 01, Bölüm IV",
+        "kirmizi-taht.webp",
+        1000,
+        1500,
+        "Koyu kızıl kadife kaftanı, tahtı ve devasa kırmızı kanatlarıyla masada oturan kudret — Salim Gümüş, Vesika 01, Bölüm IV",
       ),
       lines: [
         { t: "Kurallar onun için yazılmadı.", as: "normal" },

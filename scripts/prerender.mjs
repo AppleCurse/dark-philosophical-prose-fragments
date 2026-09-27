@@ -74,7 +74,7 @@ out = out.replace(/<div id="root"><\/div>/, `<div id="root">${injected}</div>`);
 // module scripts / preloads → göreli yol
 // mutlak yolları göreli yap: base="/repo/" → "./…"; böylece yerelde de açılır
 out = out.replace(/((?:src|href)=")[^"]*\/assets\//g, "$1./assets/");
-out = out.replace(/((?:src|href)=")\/(favicon\.svg|apple-touch-icon\.png|site\.webmanifest|llms\.txt|robots\.txt|sitemap\.xml)/g, "$1./$2");
+out = out.replace(/((?:src|href)=")\/(favicon\.svg|apple-touch-icon\.png|site\.webmanifest|llms\.txt|robots\.txt|sitemap\.xml|videos\/[^"]+)/g, "$1./$2");
 // satır içi CSS
 if (css) out = out.replace("</head>", `<style>${css}</style></head>`);
 

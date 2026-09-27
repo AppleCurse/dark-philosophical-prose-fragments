@@ -5,7 +5,7 @@
 import { readdirSync, statSync } from "node:fs";
 import path from "node:path";
 
-const BUDGET_MB = Number(process.env.BUDGET_MB ?? 1.8);
+const BUDGET_MB = Number(process.env.BUDGET_MB ?? 3.5);
 const DIST = path.resolve(import.meta.dirname, "..", "dist");
 if (!existsDist()) {
   console.error("✖ dist/ yok — önce `npm run build`.");
