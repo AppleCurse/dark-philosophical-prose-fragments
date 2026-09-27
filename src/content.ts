@@ -124,10 +124,10 @@ export const vesika: Vesika = {
   portrait: image(
     "hero.webp",
     1000,
-    666,
-    `${"Salim Gümüş"} — yarı siyah, yarı beyaz; omzunda kuzgun, havada tüyler. Vesika 01 kapak karesi`,
+    1500,
+    `${"Salim Gümüş"} — tahtta, koyu kızıl kadife kaftanı ve kırmızı kanatlarıyla. Vesika 01 kapak karesi`,
   ),
-  codaImage: image("hero-bg.webp", 1400, 933, ""),
+  codaImage: image("hero-bg.webp", 1400, 932, ""),
   ink: {
     raw: ["“Sikemeyeceğiniz kadar tecrübeli,", "sikemeyecek kadar yorgun.”"],
     /** reklam / önizleme / işbirliği hattında kullanılan temiz eşdeğer (docs/AUDIT.md §3.3) */
@@ -137,23 +137,23 @@ export const vesika: Vesika = {
   exhibits: [
     {
       tag: "EK: 01",
-      label: "YANGIN",
-      img: image("ek-yangin.webp", 420, 280, "Kanıt 01: alevlenen kanatlar — Salim Gümüş, Vesika 01"),
+      label: "MASUMİYET",
+      img: image("ek-masumiyet.webp", 420, 571, "Kanıt 01: bulutlarda huzurlu melek — Salim Gümüş, Vesika 01"),
     },
     {
       tag: "EK: 02",
-      label: "ÇAKILIŞ",
-      img: image("ek-cakilis.webp", 420, 280, "Kanıt 02: uçuruma çakılış anı — Salim Gümüş, Vesika 01"),
+      label: "KÖKEN",
+      img: image("ek-koken.webp", 420, 571, "Kanıt 02: gözlüğü takarken, uyanış — Salim Gümüş, Vesika 01"),
     },
     {
       tag: "EK: 03",
-      label: "KÖKEN",
-      img: image("ek-koken.webp", 420, 280, "Kanıt 03: düşmeden önce, saf beyaz kanatlar — Salim Gümüş, Vesika 01"),
+      label: "ÇAKILIŞ",
+      img: image("ek-cakilis.webp", 420, 571, "Kanıt 03: alaycı tebessüm, dünyaya geçiş — Salim Gümüş, Vesika 01"),
     },
     {
       tag: "EK: 04",
-      label: "MASUMİYET",
-      img: image("ek-masumiyet.webp", 420, 280, "Kanıt 04: ateşli kanatlarla düşüş — Salim Gümüş, Vesika 01"),
+      label: "YANGIN",
+      img: image("ek-yangin.webp", 420, 571, "Kanıt 04: modern melek, ekrana bakan gözler — Salim Gümüş, Vesika 01"),
     },
   ],
   chapters: [
@@ -169,19 +169,19 @@ export const vesika: Vesika = {
         { devil: "teklif etti.", me: "sistemi kurdum." },
       ],
       image: {
-        img: image("yeniden-insa.webp", 1100, 1045, "Duruş: yerden kalkıp yeniden yazan adam — Vesika 01, Bölüm I"),
+        img: image("yeniden-insa.webp", 1100, 733, "Duruş: katedralde iki yana açılmış kırmızı kanatlar — Salim Gümüş, Vesika 01, Bölüm I"),
         caption: "Duruş · Yeniden İnşa",
         quote: "“Yerden kalkıp yeniden yazdım.”",
       },
       strike: "Şeytan hata yaptı.",
       big: "BEN PRENSİP.",
-      copy: "Ben Külkedisi’ni Sindirella’ya dönüştüren ayakkabının satıcısı değilim; o pabucu giymeyi unutturan adamım.",
+      copy: "Ben Külkedisi’ni Sinderella’ya dönüştüren ayakkabının satıcısı değilim; o pabucu giymeyi unutturan adamım.",
       lines: [
         {
           t: "Aslında Şeytan’ın bile aklına gelmeyecekleri akıl edebiliyorken, melek gibi davrandığım için kusura bakmayın.",
           as: "dropcap",
         },
-        { t: "Ben Külkedisi’ni Sindirella’ya dönüştüren ayakkabının *satıcısı* değilim.", as: "normal" },
+        { t: "Ben Külkedisi’ni Sinderella’ya dönüştüren ayakkabının *satıcısı* değilim.", as: "normal" },
         { t: "Sağ pabucu mu, sol pabucu mu diye düşünürken,", as: "dim" },
         { t: "ben o pabucu giymeyi unutturan adamım.", as: "right" },
       ],
@@ -201,8 +201,8 @@ export const vesika: Vesika = {
         { t: "Korkunun kaynağını ortadan kaldırırım.", as: "strong" },
       ],
       image: {
-        img: image("yatak.webp", 1200, 675, "Ayakları kesilmiş demir yatak, sisli ormanda — Vesika 01, Bölüm II"),
-        caption: "Kanıt · Ayakları kesilmiş yatak",
+        img: image("yatak.webp", 1200, 799, "Karanlık kıvılcımlar ve kırmızı kanatlar — Salim Gümüş, Vesika 01, Bölüm II"),
+        caption: "Kanıt · Korkunun Kaynağı",
         quote: "“Altı kalmayan yatağın korkusu da kalmaz.”",
       },
       strike: "İşte bu, Salim Gümüş olmak.",
@@ -213,7 +213,7 @@ export const vesika: Vesika = {
       id: "bolum-2b",
       num: "II · devam",
       title: "Toprak",
-      fullBleed: image("toprak.webp", 1600, 893, "Toprak yığınının üzerinde dik duran adam — Vesika 01, Bölüm II.b"),
+      fullBleed: image("toprak.webp", 1600, 1066, "Karanlık dumanlar ve alev kıvılcımları arasında dik duruş — Salim Gümüş, Vesika 01, Bölüm II.b"),
       lead: "Sizi çıkamayacağınız kadar derin bir mezara koyup üzerinize toprak atıyorlarsa sevinmelisiniz.",
       lines: [
         { t: "Çünkü o toprak ayağınızın altına girerse, sizi **yükseltecektir**.", as: "normal" },
@@ -231,15 +231,15 @@ export const vesika: Vesika = {
         { t: "Şeytan konuşmaz.", as: "normal" },
         { t: "Sana **sormayı** öğretir.", as: "dim" },
         { t: "Şüpheyi hediye eder.", as: "dim" },
-        { t: "Ben *”okunan”* kutsal metinler yerine, **”okuyan”** insanı seçiyorum.", as: "quote" },
+        { t: "Ben *“okunan”* kutsal metinler yerine, **“okuyan”** insanı seçiyorum.", as: "quote" },
         { t: "Şeytanla konuştum.", as: "normal" },
         { t: "O susuyordu.", as: "lead" },
         { t: "Çünkü cevap vermek Tanrı’ya aittir.", as: "dim" },
         { t: "O bana soru sormayı öğretti.", as: "strong" },
       ],
       image: {
-        img: image("kuzgun.webp", 1300, 866, "Kuzgun, yakın plan — Vesika 01, Bölüm III"),
-        caption: "Kanıt · Kuzgun",
+        img: image("kuzgun.webp", 1300, 866, "Sert ve kararlı bakış, kırmızı kanatlar — Salim Gümüş, Vesika 01, Bölüm III"),
+        caption: "Kanıt · Sessizlik",
         quote: "“O susuyordu.”",
       },
       copy: "Şeytan konuşmaz; sana sormayı öğretir. Ben okunan metinleri değil, okuyan insanı seçerim.",
@@ -254,8 +254,8 @@ export const vesika: Vesika = {
       fullBleed: image(
         "sofra.webp",
         1600,
-        900,
-        "Katedralin ortasındaki uzun masanın başında oturan adam — Vesika 01, Bölüm IV",
+        1066,
+        "Görkemli katedral salonunda devasa kırmızı kanatlar — Salim Gümüş, Vesika 01, Bölüm IV",
       ),
       lines: [
         { t: "Kurallar onun için yazılmadı.", as: "normal" },

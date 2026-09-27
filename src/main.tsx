@@ -35,8 +35,33 @@ function mountIslands() {
   });
 }
 
+function setupCopyButtons() {
+  document.addEventListener("click", async (e) => {
+    const btn = (e.target as HTMLElement)?.closest<HTMLButtonElement>("button[data-copy]");
+    if (!btn) return;
+    const text = btn.getAttribute("data-copy");
+    if (!text) return;
+    const url = window.location.href.split("#")[0];
+    const payload = `“${text}” — ${site.person} · ${site.brand} No: ${vesika.no}\n${url}`;
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(payload);
+      }
+      const prev = btn.textContent;
+      btn.textContent = "kopyalandı ✓";
+      setTimeout(() => {
+        btn.textContent = prev;
+      }, 2000);
+    } catch {
+      // sessizce geç
+    }
+  });
+}
+
 const root = document.getElementById("root");
 const prerendered = Boolean(root && root.children.length > 0);
+
+setupCopyButtons();
 
 if (prerendered) {
   mountIslands();

@@ -4,7 +4,7 @@
   /* Kendi barındırılan, alt kümeleştirilmiş fontlar — bkz. src/fonts/fonts.css
      ("Cinzel TR" yalnızca İ (U+0130) için devreye girer; Cinzel'de bu glif yok.) */
   --font-serif: "Cormorant Garamond Variable", "Cormorant Garamond", Georgia, serif;
-  --font-display: "Cinzel Variable", "Cinzel TR", "Cinzel", Georgia, serif;
+  --font-display: "Cinzel Variable", "Cinzel TR", "Cinzel", "Cormorant Garamond Variable", Georgia, serif;
   --font-mono: "JetBrains Mono", ui-monospace, monospace;
   --font-hand: "Caveat", "Segoe Script", cursive;
 
@@ -309,7 +309,7 @@ html[data-light] body::after {
   height: 100%;
   object-fit: cover;
   transition: transform 1.6s cubic-bezier(0.22, 1, 0.36, 1);
-  filter: grayscale(1) contrast(1.05);
+  filter: contrast(1.05) saturate(1.02);
 }
 /* imleç gerçekten varsa hover: dokunmatikte "takılı kalan" durum olmasın */
 @media (hover: hover) {

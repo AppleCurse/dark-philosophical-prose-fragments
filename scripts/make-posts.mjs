@@ -64,7 +64,7 @@ slides.forEach((s, i) => {
   s.body.slice(0, 2).forEach((b, j) => (md += `${s.duel.length + j + 2}. ${b}\n`));
   md += `\n**Altyazı (temiz)**\n\n> ${s.copy || s.cover[0] || s.title}\n> ${brand}${s.note ? ` · ${s.note}` : ""}\n\n`;
   md += `**İlk yorum:** Tam metin tek sayfalık arşivde — ${site.url}\n\n`;
-  md += `**Hashtag (5):** #manifasto #karanlıkyazı #şiir #düşünce #${site.person.toLocaleLowerCase("tr").replace(/[^a-z0-9]/g, "")}\n\n---\n\n`;
+  md += `**Hashtag (5):** #manifesto #karanlıkyazı #şiir #düşünce #${site.person.toLocaleLowerCase("tr").replace(/[^a-z0-9]/g, "")}\n\n---\n\n`;
 });
 
 mkdirSync(OUT, { recursive: true });

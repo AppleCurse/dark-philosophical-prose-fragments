@@ -21,6 +21,6 @@
 ## Yazılım
 
 Uygulama kodu (Vite/React/CSS/scripts) açık kaynak değildir; siteyi kendi markan için
-kullanmak istiyorsan yaz: `salimgumus@example.com` adresini `README.md` üzerinden güncelle.
+kullanmak istiyorsan yaz: `fallenvice@soulvespera.com.tr` adresini kullanabilirsin.
 
 *Bu dosya bir hukuki tavsiye değildir; telif iddiası ve kullanım çerçevesi bildirimidir.*

@@ -537,7 +537,7 @@ export default function App() {
               {c2.lines && (
                 <Reveal>
                   <div className="mt-14">
-                    <ChapterLines lines={c2.lines} only={(l) => l.as !== "normal"} />
+                    <ChapterLines lines={c2.lines.slice(0, 3)} />
                   </div>
                 </Reveal>
               )}
@@ -546,7 +546,7 @@ export default function App() {
 
               <Reveal>
                 <div className="space-y-5">
-                  {c2.lines && <ChapterLines lines={c2.lines} only={(l) => l.as === "normal" || l.as === "strong"} />}
+                  {c2.lines && <ChapterLines lines={c2.lines.slice(3)} />}
                 </div>
                 <p className="mt-14 font-mono text-[0.65rem] uppercase tracking-[0.45em] text-silver">{c2.strike}</p>
                 {c2.copy && <CopyQuote text={c2.copy} />}
@@ -800,5 +800,24 @@ function FootLink({ href, children }: { href: string; children: ReactNode }) {
  * bileşenleri bağlar. JS yoksa yuva sessizce kaybolur, manifesto okunmaya devam eder.
  */
 function IslandSlot({ name }: { name: "ScrollProgress" | "InkWriter" | "Tools" }) {
+  if (name === "InkWriter") {
+    return (
+      <div data-island={name} className="mt-12 max-w-3xl px-4 text-center sm:mt-16">
+        <div className="ink-script ink-bleed min-h-[5.5rem] font-hand text-3xl leading-[1.3] tracking-wide text-bone sm:min-h-[7rem] sm:text-4xl md:min-h-[8rem] md:text-5xl lg:text-[3.35rem]">
+          <span className="block">{vesika.ink.raw[0]}</span>
+          <span className="mt-1 block text-silver/90 sm:mt-2">{vesika.ink.raw[1]}</span>
+        </div>
+        <div className="mt-7 flex flex-col items-center">
+          <div className="h-6 w-px bg-gradient-to-b from-silver-dim/60 to-transparent" />
+          <div className="mt-3 inline-flex items-center gap-2.5 rounded-full border border-bone/15 bg-bone/[0.04] px-5 py-2 shadow-lg backdrop-blur-md">
+            <span className="pulse-slow h-1.5 w-1.5 rounded-full bg-bone/80" aria-hidden />
+            <p className="font-serif text-base italic tracking-wide text-bone sm:text-lg md:text-xl">
+              {vesika.ink.principle}
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
   return <div data-island={name} />;
 }

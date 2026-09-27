@@ -4,7 +4,7 @@ Dört bölümlük manifestoyu tek sayfalık, **statik** bir artefakt olarak yay�
 Kaba sıva duvar, paslı çiviyle asılı kanıt fotoğrafları, divit mürekkebi ile yazılan imza
 satırları: biçim ile içerik aynı dosyada konuşur.
 
-**Yayın:** <https://applecurse.github.io/dark-philosophical-prose-fragments/>
+**Yayın:** <https://soulvespera.com.tr/>
 
 ---
 

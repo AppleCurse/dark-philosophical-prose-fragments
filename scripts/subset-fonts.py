@@ -30,8 +30,8 @@ CSS_OUT = "src/fonts.css"
 
 # Site metninde geçen karakterler + tipografik işaretler
 CHARS = (
-    " .,:;—–…“”’‘\"'()[]{}·✦ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    "abcdefghijklmnopqrstuvwxyzÇĞİIŞÖÜçğıoşü0123456789/|*~`^#%&+=<>@"
+    " .,:;—–…“”’‘\"'()[]{}·✦↺↑ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    "abcdefghijklmnopqrstuvwxyzÇĞİIŞÖÜçğıöşü0123456789/|*~`^#%&+=<>@"
 )
 
 # aile: [(çıktı adı, kaynak yolu, CSS unicode-range, stiller)]
