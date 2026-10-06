@@ -501,3 +501,29 @@ Katedral, sağ üstten inen ışık huzmeleri, tüylerle dolu boş masa: Bölüm
 
 Maliyet: **0 yeni bayt** — bütçe 1,16 MB'da kaldı. Kazanım: sitedeki en güçlü iki
 kompozisyon (masumiyet kanatları, katedral) ilk kez gerçekten görünüyor.
+
+---
+
+## J. Paralel hat birleştirmesi: "üç hal + canlı kayıtlar" + bakım turları
+
+`main` ilgisiz bir geçmişle (tek commit `a8d969f`) yeniden kurulmuştu: üzerinde
+**üç hal** (BEYAZ/ARINMIŞ · SİYAH/KİRLENMİŞ · KIRMIZI/YANMIŞ) sanat yönü, iki canlı
+video kaydı (`public/videos/`) ve yeni kareler (`siyah-*`, `kirmizi-*`) vardı; bu
+dalın beş bakım turu ise yalnızca burada duruyordu. PR #4'ün birleştirilmesi ana
+dalın yeni işini SİLECEKTİ; bu yüzden birleştirme bu dalda yapıldı:
+
+- **Sanat yönü main'den alındı:** yeni eşleme (`siyah-on`, `siyah-dikey`,
+  `siyah-profil`, `kirmizi-taht`, `kirmizi-kivilcim`, dikey `ek-*` 420×617,
+  `hero.webp` 1000×1500), `VideoRef` + `VideoPlate` (brutalist monitör), hero'da
+  üç hal şeridi, c1/c2b canlı kayıtları. Renk artık yönün kendisi: gri-ton
+  disiplini yeni karelerde aranmaz.
+- **Mimari bu daldan:** adalar + `motion.ts` + prerender doğrulamaları + bilinçli
+  kadraj (`ImageRef.pos`). Kanıt kutuları dikey sanata göre `aspect-[3/4]`'e
+  döndü; tüm `pos` değerleri yeni karelerle kontak sayfada yeniden doğrulandı.
+- **Eskiyen kareler silinmedi, `art-archive/`'e taşındı** (sofra, toprak, yatak,
+  kuzgun, yeniden-insa, hero-bg): `import.meta.glob("./assets/opt/*.webp")` hepsini
+  bundle'a koyduğu için opt'ta kalsalardı ~600 KB ölü ağırlık olurdu. Arşiv
+  bundle dışında; yeniden eşlemek isteyen `content.ts`'e geri taşır.
+- **Bütçe bekçisi:** `videos/` (1,42 MB) bütçe dışı ama GÖRÜNÜR — `preload="metadata"`
+  ile tembel akış; bekçi onu ayrı satırda raporlar. Sayfa bundle'ı 1,26 MB
+  (bütçe 1,8 MB).
