@@ -28,7 +28,19 @@ export type Site = {
 };
 
 /** Görsel tarifi: `src` = `src/assets/opt` içindeki dosya adı (App.tsx resolve eder). */
-export type ImageRef = { src: string; alt: string; w: number; h: number };
+export type ImageRef = {
+  src: string;
+  alt: string;
+  w: number;
+  h: number;
+  /**
+   * Bilinçli kadraj: `object-position`. Kutu oranı kaynaktan farklıysa kırpım
+   * OLACAK; soru nerede olacağı. Varsayılan `object-center` yüzü/özneyi bilen
+   * biri tarafından seçilmemiş demektir (docs/AUDIT.md §2.7/2). Değerler her
+   * görsel tek tek açılıp bakılarak verildi (docs/DENETIM.md §I).
+   */
+  pos?: string;
+};
 
 export type DuelRow = { devil: string; me: string };
 
@@ -89,11 +101,12 @@ export type Vesika = {
   footer: { name: string; tagline: string; quote: string };
 };
 
-const image = (name: string, w: number, h: number, alt: string): ImageRef => ({
+const image = (name: string, w: number, h: number, alt: string, pos?: string): ImageRef => ({
   src: `./assets/opt/${name}`,
   alt,
   w,
   h,
+  pos,
 });
 
 export const site: Site = {
@@ -126,6 +139,7 @@ export const vesika: Vesika = {
     1000,
     666,
     `${"Salim Gümüş"} — yarı siyah, yarı beyaz; omzunda kuzgun, havada tüyler. Vesika 01 kapak karesi`,
+    "52% 35%",
   ),
   codaImage: image("hero-bg.webp", 1400, 933, ""),
   ink: {
@@ -138,22 +152,22 @@ export const vesika: Vesika = {
     {
       tag: "EK: 01",
       label: "YANGIN",
-      img: image("ek-yangin.webp", 420, 280, "Kanıt 01: alevlenen kanatlar — Salim Gümüş, Vesika 01"),
+      img: image("ek-yangin.webp", 420, 330, "Kanıt 01: alevlenen kanatlar — Salim Gümüş, Vesika 01", "55% 30%"),
     },
     {
       tag: "EK: 02",
       label: "ÇAKILIŞ",
-      img: image("ek-cakilis.webp", 420, 280, "Kanıt 02: uçuruma çakılış anı — Salim Gümüş, Vesika 01"),
+      img: image("ek-cakilis.webp", 420, 293, "Kanıt 02: uçuruma çakılış anı — Salim Gümüş, Vesika 01", "50% 50%"),
     },
     {
       tag: "EK: 03",
       label: "KÖKEN",
-      img: image("ek-koken.webp", 420, 280, "Kanıt 03: düşmeden önce, saf beyaz kanatlar — Salim Gümüş, Vesika 01"),
+      img: image("ek-koken.webp", 420, 280, "Kanıt 03: düşmeden önce, saf beyaz kanatlar — Salim Gümüş, Vesika 01", "50% 38%"),
     },
     {
       tag: "EK: 04",
       label: "MASUMİYET",
-      img: image("ek-masumiyet.webp", 420, 280, "Kanıt 04: ateşli kanatlarla düşüş — Salim Gümüş, Vesika 01"),
+      img: image("ek-masumiyet.webp", 420, 280, "Kanıt 04: ateşli kanatlarla düşüş — Salim Gümüş, Vesika 01", "50% 45%"),
     },
   ],
   chapters: [
@@ -256,6 +270,7 @@ export const vesika: Vesika = {
         1600,
         900,
         "Katedralin ortasındaki uzun masanın başında oturan adam — Vesika 01, Bölüm IV",
+        "60% 45%",
       ),
       lines: [
         { t: "Kurallar onun için yazılmadı.", as: "normal" },

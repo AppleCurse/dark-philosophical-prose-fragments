@@ -40,7 +40,10 @@ IM(["/tmp/og-base.png", "-strip", "-draw", "line 86,44 240,44", "-draw", "line 8
     ...draw, "-quality", "72", "-colors", "128", "-define", "png:compression-level=9", "public/og.png"]);
 
 // apple-touch-icon (180×180, kare kırpım)
+// -strip + sıkıştırma: çıktı yeniden üretilebilir ve 306 B daha küçük
+// (piksel farkı 0 — compare -metric AE ile doğrulandı).
 IM(["src/assets/opt/hero.webp", "-resize", "180x180^", "-gravity", "north", "-extent", "180x180",
-    "-colorspace", "Gray", "-brightness-contrast", "-10x8", "public/apple-touch-icon.png"]);
+    "-colorspace", "Gray", "-brightness-contrast", "-10x8",
+    "-strip", "-define", "png:compression-level=9", "public/apple-touch-icon.png"]);
 
 console.log("✓ public/og.png, public/apple-touch-icon.png");

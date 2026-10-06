@@ -31,6 +31,34 @@ jobs:
           console.log('✓ manifesto statik HTML içinde');
           "
 
+      # Statik HTML'deki her etkileşim düğümü gerçekten bir dinleyiciyle buluşuyor mu?
+      # (Geçmişte data-copy butonları render ediliyor ama dinleyici hiç bağlanmıyordu:
+      #  buton görünür, tıklanınca hiçbir şey olmuyordu — bkz. docs/DENETIM.md §B1.)
+      #
+      # Ölçüt BİLEREK "seçici literali": `data-copy` adı App.tsx'te JSX özniteliği olarak
+      # da geçtiği için zayıf bir kanıttı ve negatif testi GEÇEMİYORDU. `button[data-copy]`
+      # ve `[data-torch]` yalnızca dinleyiciyi kuran main.tsx'te var; dinleyici silinirse
+      # tree-shaking bu literalleri de götürür → adım patlar.
+      - name: Verify wired interactions (no dead controls)
+        run: |
+          node -e "
+          const fs=require('fs');
+          const js=fs.readdirSync('dist/assets').filter(f=>f.endsWith('.js'))
+                     .map(f=>fs.readFileSync('dist/assets/'+f,'utf8')).join('');
+          const probes=[
+            ['button[data-copy]','alıntı kopyalama dinleyicisi'],
+            ['[data-torch]','duvar feneri dinleyicisi'],
+            ['vesika.nusha.v1','mühür / nüsha adası'],
+            ['vesika.kazinti.v1','duvara kazı adası'],
+          ];
+          let bad=0;
+          for (const [needle,label] of probes) {
+            if (!js.includes(needle)) { console.error('Ölü kontrol — bağlanmamış: '+label); bad++; }
+          }
+          if (bad) process.exit(1);
+          console.log('✓ '+probes.length+' etkileşim de dinleyicisiyle pakete girmiş');
+          "
+
       - uses: actions/upload-artifact@v4
         with:
           name: site

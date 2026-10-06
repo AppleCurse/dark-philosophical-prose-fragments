@@ -14,6 +14,7 @@ import "./index.css";
 import "./fonts.css";
 import { Fragment, type ReactNode } from "react";
 import { site, vesika, type ImageRef, type Line } from "./content";
+import type { IslandName } from "./islands-registry";
 
 /* ---------- görsel köprüsü: content.ts yolu → Vite'ın hash'lenmiş URL'i ---------- */
 
@@ -49,6 +50,31 @@ function renderInline(text: string): ReactNode {
 /** Kaydırma-animasyonu sarmalayıcısı. Animasyon CSS'te; JS yalnızca kilidi açar. */
 function Reveal({ children, className = "" }: { children: ReactNode; className?: string }) {
   return <div className={`reveal ${className}`.trim()}>{children}</div>;
+}
+
+/** Havada kalan tek tüy: fotoğraftan sayfaya geçen, CSS ile düşen dekor. */
+function Feather({ className = "" }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      className={`falling-feather ${className}`.trim()}
+      aria-hidden="true"
+      focusable="false"
+    >
+      <path
+        d="M12 1.5c4.4 2.6 6.6 6.4 6.1 10.6-.4 3.6-2.6 6.6-6.1 10.4-3.5-3.8-5.7-6.8-6.1-10.4C5.4 7.9 7.6 4.1 12 1.5Z"
+        fill="currentColor"
+        opacity="0.5"
+      />
+      <path d="M12 2.5v19" stroke="#0b0b0d" strokeWidth="0.8" opacity="0.65" />
+      <path
+        d="M12 6.5 8.6 9.2M12 6.5l3.4 2.7M12 11l-3.6 2.9M12 11l3.6 2.9M12 15.5l-3 2.4M12 15.5l3 2.4"
+        stroke="#0b0b0d"
+        strokeWidth="0.55"
+        opacity="0.45"
+      />
+    </svg>
+  );
 }
 
 function Ornament() {
@@ -107,7 +133,7 @@ function CopyButton({ text }: { text: string }) {
     <button
       type="button"
       data-copy={text}
-      className="copy-quote font-mono text-[0.55rem] uppercase tracking-[0.3em] text-silver-dim/70 transition-colors hover:text-bone focus-visible:text-bone"
+      className="copy-quote no-print font-mono text-[0.55rem] uppercase tracking-[0.3em] text-silver-dim/70 transition-colors hover:text-bone focus-visible:text-bone"
     >
       alıntıyı kopyala
     </button>
@@ -220,9 +246,10 @@ function Plate({
           loading={eager ? "eager" : "lazy"}
           decoding="async"
           fetchPriority={eager ? "high" : "auto"}
+          style={img.pos ? { objectPosition: img.pos } : undefined}
           className="h-full w-full object-cover object-center"
         />
-        <div className={`pointer-events-none absolute inset-0 bg-gradient-to-t ${tint}`} aria-hidden="true" />
+        <div className={`overlay pointer-events-none absolute inset-0 bg-gradient-to-t ${tint}`} aria-hidden="true" />
         {(caption || quote) && (
           <div className="absolute bottom-2.5 left-3.5 right-3.5 flex items-end justify-between">
             {caption && (
@@ -260,7 +287,7 @@ function lineClass(role: Line["as"]) {
 }
 
 function ChapterLines({ lines, only }: { lines: Line[]; only?: (l: Line) => boolean }) {
-  const shown = lines.filter((l) => !String(l.as).startsWith("split") && (!only || only(l)));
+  const shown = only ? lines.filter(only) : lines;
   return (
     <div className="space-y-7">
       {shown.map((l, i) => (
@@ -283,7 +310,10 @@ function Exhibit({ ex, tilt }: { ex: (typeof vesika.exhibits)[number]; tilt: num
         className="companion-snapshot w-[84px] rounded-[2px] border border-white/10 bg-[#0c0c0c] p-1.5 sm:w-[96px] sm:p-2 md:w-[116px] lg:w-[128px]"
         style={{ rotate: `${tilt}deg` }}
       >
-        <div className="relative aspect-[3/4] overflow-hidden bg-black">
+        {/* kare: kanıt fotoğrafları yatay kompozisyonlar (kanatlar!); 3:4 kutu
+            karenin yarısını çöpe atıyordu. Kare snapshot hem daha az kırpar
+            hem de "kanıt" diline daha uygun. */}
+        <div className="relative aspect-square overflow-hidden bg-black">
           <img
             src={img.src}
             alt={img.alt}
@@ -291,10 +321,11 @@ function Exhibit({ ex, tilt }: { ex: (typeof vesika.exhibits)[number]; tilt: num
             height={img.h}
             loading={tilt > 0 ? "eager" : "lazy"}
             decoding="async"
+            style={img.pos ? { objectPosition: img.pos } : undefined}
             className="h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-[1.04]"
           />
           <div
-            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"
+            className="overlay pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"
             aria-hidden="true"
           />
         </div>
@@ -361,10 +392,19 @@ export default function App() {
         </div>
       </div>
 
-      <header className="wall-surface relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden px-4 pb-24 pt-16 sm:px-6 md:px-8 md:pb-28 md:pt-20">
-        <div className="pointer-events-none absolute inset-0" aria-hidden="true">
+      <header
+        data-torch=""
+        className="wall-surface relative flex min-h-[100svh] flex-col items-center justify-center overflow-hidden px-4 pb-24 pt-16 sm:px-6 md:px-8 md:pb-28 md:pt-20"
+      >
+        <div className="overlay pointer-events-none absolute inset-0" aria-hidden="true">
           <div className="absolute -top-24 left-1/2 h-[650px] max-w-full w-[850px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,rgba(236,233,226,0.08),transparent)] blur-3xl" />
         </div>
+
+        {/* tek ampul ziyaretçinin elinde: işaretçiyle gezinen sıcak ışık (src/main.tsx) */}
+        <span className="wall-torch no-print" aria-hidden="true" />
+
+        {/* kapak karesindeki tüylerden biri fotoğraftan sayfaya düşmeye devam eder */}
+        <Feather className="no-print" />
 
         <h1 className="sr-only">
           {site.title} — {vesika.chapters.length} bölüm: {vesika.chapters.map((c) => c.title).join(", ")}
@@ -420,9 +460,10 @@ export default function App() {
                     loading="eager"
                     decoding="async"
                     fetchPriority="high"
+                    style={portrait.pos ? { objectPosition: portrait.pos } : undefined}
                     className="h-full w-full object-cover object-center"
                   />
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20" aria-hidden="true" />
+                  <div className="overlay pointer-events-none absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-black/20" aria-hidden="true" />
                 </div>
                 <div className="mt-2 flex items-center justify-between px-1 font-mono text-[0.42rem] uppercase tracking-[0.22em] text-silver-dim sm:mt-3 sm:text-[0.5rem]">
                   <span>{vesika.carving.caption.split(" · ")[0]}</span>
@@ -445,7 +486,7 @@ export default function App() {
 
           <IslandSlot name="InkWriter" />
 
-          <nav aria-label="Bölümler" className="mt-10 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 sm:mt-12">
+          <nav aria-label="Bölümler" className="no-print mt-10 flex flex-wrap items-center justify-center gap-x-5 gap-y-2 sm:mt-12">
             {vesika.chapters.map((c) => (
               <a
                 key={c.id}
@@ -457,7 +498,11 @@ export default function App() {
             ))}
           </nav>
 
-          <div className="mt-8 flex flex-col items-center gap-2 opacity-60 transition-opacity hover:opacity-100">
+          <p className="torch-hint mt-8 font-mono text-[0.5rem] uppercase tracking-[0.4em] text-silver-dim/70">
+            ışığı duvara gezdir
+          </p>
+
+          <div className="no-print mt-4 flex flex-col items-center gap-2 opacity-60 transition-opacity hover:opacity-100">
             <span className="font-mono text-[0.52rem] uppercase tracking-[0.45em] text-silver-dim">aşağı kaydır</span>
             <div className="h-7 w-px bg-gradient-to-b from-silver-dim to-transparent" aria-hidden="true" />
           </div>
@@ -465,6 +510,17 @@ export default function App() {
       </header>
 
       <main id="icerik">
+        {/* yalnızca kâğıtta: basılı vesikanın künyesi (@media print) */}
+        <div className="print-masthead">
+          <p className="print-masthead-title">
+            VESİKA No: {vesika.no} — {vesika.chapters[0].big}
+          </p>
+          <p className="print-masthead-meta">
+            {site.person} · {vesika.date} · {vesika.place} · {vesika.chapters.length} bölüm
+          </p>
+          <p className="print-masthead-rule" aria-hidden="true" />
+        </div>
+
         {/* ================= I — BEN VE ŞEYTAN ================= */}
         <section id={c1.id} aria-labelledby={`${c1.id}-baslik`} className="relative px-6 py-28 md:py-36">
           <div className="mx-auto max-w-4xl">
@@ -522,7 +578,7 @@ export default function App() {
         {/* ================= II — CANAVARIN ALTINDAKİ YATAK ================= */}
         <section id={c2.id} aria-labelledby={`${c2.id}-baslik`} className="relative border-t border-bone/5 bg-ash">
           <div className="grid md:grid-cols-2 md:items-start">
-            <div className="relative hidden md:sticky md:top-0 md:block md:h-screen">
+            <div className="sticky-plate relative hidden md:sticky md:top-0 md:block md:h-screen">
               {c2.image && (
                 <Plate image={c2.image.img} className="absolute inset-0 h-full" ratio="h-full" tint="from-transparent via-transparent to-ash" />
               )}
@@ -564,7 +620,7 @@ export default function App() {
 
         {/* ================= II.b — TOPRAK ================= */}
         <section id={c2b.id} aria-labelledby={`${c2b.id}-baslik`} className="relative">
-          <div className="relative h-[80vh] min-h-[520px] overflow-hidden">
+          <div className="bleed-stage relative h-[80vh] min-h-[520px] overflow-hidden">
             {c2b.fullBleed && (
               <img
                 src={resolve(c2b.fullBleed).src}
@@ -576,7 +632,7 @@ export default function App() {
                 className="absolute inset-0 h-full w-full object-cover object-center"
               />
             )}
-            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink via-ink/30 to-ink" aria-hidden="true" />
+            <div className="overlay pointer-events-none absolute inset-0 bg-gradient-to-b from-ink via-ink/30 to-ink" aria-hidden="true" />
             <div className="relative flex h-full flex-col items-center justify-center px-6 text-center">
               <Reveal>
                 <h2 id={`${c2b.id}-baslik`} className="sr-only">
@@ -638,7 +694,7 @@ export default function App() {
               )}
             </div>
 
-            <div className="relative order-none md:sticky md:top-0 md:h-screen">
+            <div className="sticky-plate relative order-none md:sticky md:top-0 md:h-screen">
               {c3.image && (
                 <Plate image={c3.image.img} className="absolute inset-0 h-full" ratio="h-full" tint="from-transparent via-transparent to-ash" />
               )}
@@ -647,72 +703,86 @@ export default function App() {
         </section>
 
         {/* ================= IV — CEHENNEME YATIRIM ================= */}
-        <section id={c4.id} aria-labelledby={`${c4.id}-baslik`} className="relative overflow-hidden">
-          {c4.fullBleed && (
-            <>
-              <img
-                src={resolve(c4.fullBleed).src}
-                alt={c4.fullBleed.alt}
-                width={c4.fullBleed.w}
-                height={c4.fullBleed.h}
-                loading="lazy"
-                decoding="async"
-                className="absolute inset-0 h-full w-full object-cover object-center"
-              />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink via-ink/60 to-ink" aria-hidden="true" />
-            </>
-          )}
+        {/* Katedral karesi eskiden %60 karartılmış bir duvar kâğıdıydı: ışık
+            huzmeleri ve tüylerle dolu boş masa okunmuyordu (docs/AUDIT.md §2.7/1).
+            Artık Bölüm II/III ile aynı kalıp: tam görünür yapışkan levha +
+            yanında metin. Görsel metnin ARKASINDA değil, YANINDA. */}
+        <section id={c4.id} aria-labelledby={`${c4.id}-baslik`} className="relative border-t border-bone/5">
+          <div className="grid md:grid-cols-2 md:items-start">
+            <div className="sticky-plate relative hidden md:sticky md:top-0 md:block md:h-screen">
+              {c4.fullBleed && (
+                <Plate
+                  image={c4.fullBleed}
+                  className="absolute inset-0 h-full"
+                  ratio="h-full"
+                  tint="from-transparent via-transparent to-ink"
+                />
+              )}
+            </div>
 
-          <div className="relative mx-auto max-w-3xl px-6 py-28 md:py-40">
-            <Reveal>
-              <ChapterMark num={c4.num} title={c4.title} latin={c4.latin} id={`${c4.id}-baslik`} />
-              <div className="space-y-4 text-center">
-                <p className="font-serif text-3xl italic leading-tight text-silver md:text-5xl">{c4.big}</p>
-                <h3 className="silver-text text-4xl leading-tight tracking-[0.08em] md:text-6xl lg:text-7xl">{c4.strike}</h3>
-                {c4.copy && <CopyQuote text={c4.copy} />}
-              </div>
-            </Reveal>
-
-            {c4.lines && (
+            <div className="relative z-10 px-6 py-24 md:px-14 md:py-36 lg:px-20">
               <Reveal>
-                <div className="mt-20 space-y-5">
-                  {c4.lines.slice(0, 2).map((l, i) => (
-                    <p key={i} className={lineClass(l.as)}>
-                      {renderInline(l.t)}
-                    </p>
-                  ))}
+                <ChapterMark num={c4.num} title={c4.title} latin={c4.latin} align="left" id={`${c4.id}-baslik`} />
+                <div className="space-y-4">
+                  <p className="font-serif text-3xl italic leading-tight text-silver md:text-5xl">{c4.big}</p>
+                  <h3 className="silver-text text-4xl leading-tight tracking-[0.08em] md:text-6xl">{c4.strike}</h3>
+                  {c4.copy && <CopyQuote text={c4.copy} />}
                 </div>
               </Reveal>
-            )}
 
-            {c4.lines && (
-              <Reveal>
-                <div className="my-16 grid gap-8 md:grid-cols-2">
-                  {(c4.split ?? []).map((s, i) => (
-                    <div key={i} className={i === 0 ? "border-l border-silver-dim/50 pl-6" : "border-l border-bone pl-6"}>
-                      <p className={`font-mono text-[0.6rem] uppercase tracking-[0.3em] ${i === 0 ? "text-silver-dim" : "text-bone"}`}>{s.for}</p>
-                      <p className="mt-2 font-serif text-2xl text-white/90 md:text-3xl">{s.then}</p>
-                    </div>
-                  ))}
-                </div>
-              </Reveal>
-            )}
-
-            {c4.lines && (
-              <Reveal>
-                <div className="space-y-14">
-                  {(c4.moves ?? []).map((m, i) => (
-                    <div key={i} className="space-y-3">
-                      <p className="font-serif text-xl leading-relaxed text-bone/85 md:text-2xl">{m.open}</p>
-                      <p className="text-bone/70">
-                        <span className="font-display text-2xl font-bold uppercase tracking-[0.15em] text-white md:text-4xl">
-                          {m.turn}
-                        </span>
+              {c4.lines && (
+                <Reveal>
+                  <div className="mt-16 space-y-5">
+                    {c4.lines.slice(0, 2).map((l, i) => (
+                      <p key={i} className={lineClass(l.as)}>
+                        {renderInline(l.t)}
                       </p>
-                    </div>
-                  ))}
-                </div>
-              </Reveal>
+                    ))}
+                  </div>
+                </Reveal>
+              )}
+
+              {c4.lines && (
+                <Reveal>
+                  <div className="my-14 grid gap-8">
+                    {(c4.split ?? []).map((sp, i) => (
+                      <div key={i} className={i === 0 ? "border-l border-silver-dim/50 pl-6" : "border-l border-bone pl-6"}>
+                        <p className={`font-mono text-[0.6rem] uppercase tracking-[0.3em] ${i === 0 ? "text-silver-dim" : "text-bone"}`}>{sp.for}</p>
+                        <p className="mt-2 font-serif text-2xl text-white/90 md:text-3xl">{sp.then}</p>
+                      </div>
+                    ))}
+                  </div>
+                </Reveal>
+              )}
+
+              {c4.lines && (
+                <Reveal>
+                  <div className="space-y-12">
+                    {(c4.moves ?? []).map((m, i) => (
+                      <div key={i} className="space-y-3">
+                        <p className="font-serif text-xl leading-relaxed text-bone/85 md:text-2xl">{m.open}</p>
+                        <p className="text-bone/70">
+                          <span className="font-display text-2xl font-bold uppercase tracking-[0.15em] text-white md:text-4xl">
+                            {m.turn}
+                          </span>
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </Reveal>
+              )}
+            </div>
+
+            {/* mobilde katedral metnin altında, tam kadraj */}
+            {c4.fullBleed && (
+              <div className="md:hidden">
+                <Plate
+                  image={c4.fullBleed}
+                  ratio="aspect-[16/10]"
+                  caption="Kanıt · Boş masa, dolu sandalyeler"
+                  tint="from-ink via-transparent to-transparent"
+                />
+              </div>
             )}
           </div>
         </section>
@@ -729,7 +799,7 @@ export default function App() {
             decoding="async"
             className="absolute inset-0 h-full w-full -scale-x-100 object-cover object-[50%_30%] opacity-40"
           />
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-ink via-ink/70 to-ink" aria-hidden="true" />
+          <div className="overlay pointer-events-none absolute inset-0 bg-gradient-to-b from-ink via-ink/70 to-ink" aria-hidden="true" />
           <div className="relative mx-auto max-w-4xl px-6 py-32 text-center md:py-44">
             <Reveal>
               <p className="font-serif text-xl leading-relaxed text-bone/75 md:text-2xl">{vesika.coda[0]}</p>
@@ -744,6 +814,9 @@ export default function App() {
                 </p>
               </div>
             </Reveal>
+
+            {/* Bölüm III'ün iddiası burada etkileşime döner: "okuyan" insan yazar. */}
+            <IslandSlot name="Carve" />
           </div>
         </section>
       </main>
@@ -760,6 +833,9 @@ export default function App() {
           <p className="silver-text text-3xl tracking-[0.28em] md:text-5xl">{vesika.footer.name}</p>
           <p className="mt-4 font-mono text-[0.62rem] uppercase tracking-[0.5em] text-silver-dim">{vesika.footer.tagline}</p>
           <p className="mt-16 font-serif text-base italic text-bone/40">{vesika.footer.quote}</p>
+
+          {/* okuyucu kendi nüshasını mühürler; numara paylaşım metnine de girer */}
+          <IslandSlot name="Seal" />
 
           <div className="mt-14 flex flex-col items-center gap-4">
             <span className="font-mono text-[0.55rem] uppercase tracking-[0.35em] text-silver-dim">
@@ -799,6 +875,6 @@ function FootLink({ href, children }: { href: string; children: ReactNode }) {
  * olduğu gibi bırakılır; tarayıcıda `src/main.tsx` aynı düğümlerin içine gerçek
  * bileşenleri bağlar. JS yoksa yuva sessizce kaybolur, manifesto okunmaya devam eder.
  */
-function IslandSlot({ name }: { name: "ScrollProgress" | "InkWriter" | "Tools" }) {
+function IslandSlot({ name }: { name: IslandName }) {
   return <div data-island={name} />;
 }

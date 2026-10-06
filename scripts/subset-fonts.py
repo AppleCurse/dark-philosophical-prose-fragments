@@ -4,11 +4,11 @@ Font alt kümesi (subset) üretimi — repoda ihtiyaç duyulan gliflerin minik h
 
 Neden: Google Fonts'tan 5 aile ~20 stil isteniyordu (render-blocking istek + Cyrillic/
 Vietnamese alt kümeleri dahil). Sitede gereken: 4 aile, 5 stil, ~85 glif. Bu script
-fontsource paketlerindeki kaynak woff2 dosyalarından `src/fonts/*.woff2` altına
-küçük, aynı kaynaklı alt kümeler yazar.
+fontsource paketlerindeki kaynak woff2 dosyalarından `src/assets/fonts/*.woff2` altına
+küçük, aynı kaynaklı alt kümeler yazar; `@font-face` tanımlarını da `src/fonts.css`'e üretir.
 
 Gereksinim: pip install fonttools brotli   (CI'da gerekmez — çıktı repoda commit'li)
-Kullanım:   npm run patch:font
+Kullanım:   npm run fonts:subset
 """
 
 import os
