@@ -694,11 +694,19 @@ export default function App() {
               )}
             </div>
 
-            <div className="sticky-plate relative order-none md:sticky md:top-0 md:h-screen">
+            <div className="sticky-plate relative hidden md:sticky md:top-0 md:block md:h-screen">
               {c3.image && (
                 <Plate image={c3.image.img} className="absolute inset-0 h-full" ratio="h-full" tint="from-transparent via-transparent to-ash" />
               )}
             </div>
+
+            {/* mobilde kuzgun metnin altında, tam kadraj (yapışkan sütun
+                telefonda yüksekliksiz kalıp çöküyordu) */}
+            {c3.image && (
+              <div className="md:hidden">
+                <Plate image={c3.image.img} ratio="aspect-[3/2]" caption={c3.image.caption} tint="from-ash via-transparent to-transparent" />
+              </div>
+            )}
           </div>
         </section>
 
