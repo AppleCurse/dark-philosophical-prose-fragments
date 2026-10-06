@@ -54,13 +54,9 @@ const distAssets = path.join(DIST, "assets");
 const cssFiles = existsSync(distAssets) ? readdirSync(distAssets).filter((f) => f.endsWith(".css")) : [];
 let css = cssFiles.map((f) => readFileSync(path.join(distAssets, f), "utf8")).join("\n");
 if (css) {
-  // css içindeki mutlak /assets/ yollarını göreli yap
-  css = css
-    // "/assets/x.woff2" ve "/repo/assets/x.woff2" → "./assets/x.woff2"
-    .replace(/url\((['"]?)(?:\/[^)"']*)?\/assets\//g, "url($1./assets/")
-    // src satır içi <style> içindeyken url() satır sonuna kadar uzayabilir; güvenli taraflı eşleme:
-    .replace(/url\((['"]?)\.\/assets\/([^)"']*)\)/g, 'url($1./assets/$2)');
-  // satır içi CSS'te node_modules kaynaklarını gömmek yerine dosyaya yaz (boş; Vite zaten kopyaladı)
+  // CSS içindeki mutlak /assets/ (ve eski /repo/assets/) yollarını göreli yap:
+  // prerender çıktısı hem kökte hem alt yolda, hem sunucuda hem dosyadan açılabilir olmalı.
+  css = css.replace(/url\((['"]?)(?:\/[^)"']*)?\/assets\//g, "url($1./assets/");
 }
 
 /* 5) index.html'i yeniden kur */
@@ -74,7 +70,7 @@ out = out.replace(/<div id="root"><\/div>/, `<div id="root">${injected}</div>`);
 // module scripts / preloads → göreli yol
 // mutlak yolları göreli yap: base="/repo/" → "./…"; böylece yerelde de açılır
 out = out.replace(/((?:src|href)=")[^"]*\/assets\//g, "$1./assets/");
-out = out.replace(/((?:src|href)=")\/(favicon\.svg|apple-touch-icon\.png|site\.webmanifest|llms\.txt|robots\.txt|sitemap\.xml|videos\/[^"]+)/g, "$1./$2");
+out = out.replace(/((?:src|href)=")\/(favicon\.svg|apple-touch-icon\.png|site\.webmanifest|llms\.txt|robots\.txt|sitemap\.xml)/g, "$1./$2");
 // satır içi CSS
 if (css) out = out.replace("</head>", `<style>${css}</style></head>`);
 
@@ -99,6 +95,42 @@ for (const probe of ["Yatağın ayaklarını keserim", "BEN PRENSİP", "çene ke
   if (!text.includes(probe)) throw new Error(`prerender metninde eksik: ${probe}`);
 }
 log("doğrulama: manifestonun kritik cümleleri statik HTML'de ✔");
+
+/* 7) meta tutarlılığı: index.html ↔ src/content.ts
+ * Elle yazılan head bloğu ile "tek doğruluk kaynağı" ayrışırsa build patlar.
+ * Boşluklar normalize edilir; böylece index.html'deki satır kırılmaları sorun olmaz. */
+const m = entry.meta();
+const flat = out.replace(/\s+/g, " ");
+const required = [
+  [`<title>${m.title}</title>`, "title"],
+  [`content="${m.description}"`, "meta description"],
+  [`<link rel="canonical" href="${m.url}" />`, "canonical"],
+  [`<meta property="og:url" content="${m.url}" />`, "og:url"],
+  [`content="${m.ogImage}"`, "og:image / twitter:image"],
+  [`"datePublished": "${m.datePublished}"`, "JSON-LD datePublished"],
+];
+for (const [needle, label] of required) {
+  if (!flat.includes(needle)) throw new Error(`index.html ↔ content.ts kayması: ${label}\n  beklenen: ${needle}`);
+}
+const jsonLdUrls = flat.split(`"url": "${m.url}"`).length - 1;
+if (jsonLdUrls < 2) throw new Error(`JSON-LD içinde ${m.url} en az 2 kez geçmeli (Person + WebSite), bulunan: ${jsonLdUrls}`);
+if (flat.includes("applecurse.github.io")) {
+  throw new Error("index.html'de eski GitHub Pages adresi kalmış — content.ts site.url tek kaynak");
+}
+log(`doğrulama: head bloğu content.ts ile tutarlı (${m.url}) ✔`);
+
+/* 8) ada kütüğü: HTML'deki her yuva kayıtlı bir ada olmalı
+ * Ters yönü (kayıtlı ama render edilmemiş) sorun değil — ada ileride eklenebilir.
+ * Asıl ölümcül olan: şablonda yuva açılmış ama kütükte adı yok → main.tsx o düğümü
+ * asla doldurmaz ve sayfada sessiz bir boşluk kalır. */
+const known = new Set(entry.islandNames());
+const slots = [...html.matchAll(/data-island="([^"]+)"/g)].map((x) => x[1]);
+if (slots.length === 0) throw new Error("HTML'de hiç ada yuvası yok — şablon değişmiş olabilir");
+const unknown = [...new Set(slots)].filter((s) => !known.has(s));
+if (unknown.length) {
+  throw new Error(`Kayıtsız ada yuvası: ${unknown.join(", ")} (src/islands-registry.ts'e ekle)`);
+}
+log(`doğrulama: ${new Set(slots).size} ada yuvası kütükle eşleşiyor ✔`);
 
 function filesRecursive(dir, prefix = "") {
   const res = [];

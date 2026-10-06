@@ -39,7 +39,7 @@ jobs:
       - name: Build (prerender + statik site)
         run: npm run build
 
-      - name: Bundle size guard (<3.5 MB)
+      - name: Bundle size guard (<1.8 MB)
         run: npm run size
 
       - name: Configure Pages
